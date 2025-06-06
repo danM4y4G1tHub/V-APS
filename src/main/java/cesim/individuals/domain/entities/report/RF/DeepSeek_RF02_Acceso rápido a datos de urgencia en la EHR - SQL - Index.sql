@@ -1,0 +1,1 @@
+CREATE INDEX idx_patient_ci ON patients USING GIN ((resource->'identifier'));
