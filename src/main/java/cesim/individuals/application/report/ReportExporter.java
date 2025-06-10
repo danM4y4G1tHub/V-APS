@@ -1,7 +1,5 @@
 package cesim.individuals.application.report;
 
-import cesim.individuals.application.notification.NotificationDispatcher;
-import cesim.individuals.domain.entities.report.outputDTO.CarePlanNotificationDTO;
 import cesim.individuals.domain.entities.report.outputDTO.MonthlyStatisticsReportDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -2,7 +2,7 @@ package cesim.individuals.domain.entities;
 
 import java.util.List;
 
-public record Resourse(
+public record Resource(
         String id,
         Meta meta,
         Narrative text,

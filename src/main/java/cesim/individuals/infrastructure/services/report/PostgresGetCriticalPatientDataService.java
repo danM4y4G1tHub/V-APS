@@ -1,13 +1,14 @@
 package cesim.individuals.infrastructure.services.report;
 
-import cesim.individuals.domain.entities.*;
+import cesim.individuals.domain.entities.Patient;
+import cesim.individuals.domain.entities.Practitioner;
 import cesim.individuals.domain.entities.report.outputDTO.CriticalPatientDataDTO;
 import cesim.individuals.domain.usecases.report.dependencies.GetCriticalPatientDataService;
 import cesim.individuals.infrastructure.repository.*;
 import cesim.individuals.infrastructure.repository.models.*;
 import cesim.individuals.infrastructure.services.practitioner.PostgresGetPractitionerByIdService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
   @Override
   public CriticalPatientDataDTO getCriticalDataByIdentification(String CI) throws Exception {
     try {
-      PatientModel patientModel = patientRepository.findByIdentication(CI)
+      PatientModel patientModel = patientRepository.findByIdentification(CI)
               .orElseThrow(() -> new IllegalArgumentException("Patient not found with CI: " + CI));
 
       Patient patient = patientModel.getResource();
@@ -52,12 +53,16 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
       List<ObservationModel> observationModels = observationRepository.findByEncounterId(encounterId);
 
       String practitionerReference = "";
+      Practitioner practitioner = null;
       if (medicationModels.size() != 0) {
         practitionerReference = medicationModels.get(0).getResource().requester().reference();
-      }
 
-      String practitionerId = practitionerReference.split("/")[1];
-      Practitioner practitioner = practitionerByIdService.getById(practitionerId);
+        String practitionerId = "";
+        if(practitionerReference != null){
+          practitionerId = practitionerReference.split("/")[1];
+        }
+        practitioner = practitionerByIdService.getById(practitionerId);
+      }
 
       List<RelatedPersonModel> relatedPersonModels = relatedPersonRepository.getByPatientId(patientId);
       List<CarePlanModel> carePlanModel = carePlanRepository.findByPatientId(patientId);
@@ -74,7 +79,7 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
               createCarePlansInfo(carePlanModel)
       );
     } catch (Exception e) {
-      throw new Exception("An error occoured while searching for critical patient data", e);
+        throw new Exception("An error occurred while searching for critical patient data", e);
     }
   }
 
@@ -141,7 +146,7 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
     List<CriticalPatientDataDTO.EncounterInfo> encounterInfos = encounterModels.stream()
             .map(e ->
                     new CriticalPatientDataDTO.EncounterInfo(
-                            e.getResource().actualPeriod(),
+                            e.getResource().period(),
                             e.getResource().type(),
                             e.getResource().reason()
                     )
@@ -195,15 +200,15 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
   private List<CriticalPatientDataDTO.CarePlanInfo> createCarePlansInfo(List<CarePlanModel> carePlanModels) {
     if (carePlanModels.size() == 0) return new ArrayList<>();
 
-    List<CriticalPatientDataDTO.CarePlanInfo> carePlanInfos = carePlanModels.stream()
-            .map(c ->
-                    new CriticalPatientDataDTO.CarePlanInfo(
-                            c.getResource().status(),
-                            c.getResource().intent(),
-                            c.getResource().activity()
-                    )
+    return carePlanModels.stream()
+            .map(c -> {
+                      return new CriticalPatientDataDTO.CarePlanInfo(
+                              c.getResource().status(),
+                              c.getResource().intent(),
+                              c.getResource().activity()
+                      );
+                    }
             ).collect(Collectors.toList());
-    return null;
   }
 
 }

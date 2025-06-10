@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record ClinicalReportDTO(
-        PatientInfo patientInfo,
         Page<PatientInfo> patients,
         Page<ConditionsInfo> conditions
 ) {

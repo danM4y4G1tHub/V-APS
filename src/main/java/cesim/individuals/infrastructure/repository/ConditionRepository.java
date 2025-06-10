@@ -27,16 +27,16 @@ public interface ConditionRepository extends JpaRepository<ConditionModel, Strin
         PagingAndSortingRepository<ConditionModel, String> {
   @RestResource()
   @Query(value =
-          "SELECT * FROM conditions c WHERE c.resource->'subject'->>'reference' = CONCAT('Patient/', :patientId)",
+          "SELECT * FROM conditions c " +
+          "WHERE c.resource->'subject'->>'reference' = CONCAT('Patient/', :patientId)",
           nativeQuery = true)
   List<ConditionModel> findByPatientId(@Param("patientId") String patientId);
 
   @RestResource()
   @Query(value =
           "SELECT * FROM conditions c " +
-                  "WHERE c.resource->'subject'->>'reference' " +
-                  "LIKE 'Patient/%' " +
-                  "AND split_part(c.resource->'subject'->>'reference', '/', 2) IN :patientIds",
+          "WHERE c.resource->'subject'->>'reference' LIKE 'Patient/%' " +
+          "AND split_part(c.resource->'subject'->>'reference', '/', 2) IN :patientIds",
           nativeQuery = true)
   List<ConditionModel> findByPatientIds(@Param("patientIds") List<String> patientIds);
 
@@ -47,6 +47,15 @@ public interface ConditionRepository extends JpaRepository<ConditionModel, Strin
   List<ConditionModel> findByRecordedDate(
           @Param("startDate") String startDate,
           @Param("endDate") String endDate);
+
+
+  @RestResource()
+  @Query(value = "SELECT COUNT(DISTINCT c.id) FROM conditions c " +
+          "WHERE c.resource->'subject'->>'reference' LIKE 'Patient/%' " +
+          "AND split_part(c.resource->'subject'->>reference, '/', 2) IN :patientIds " +
+          "AND c.resource->>'clinicalStatus' = 'active'"
+  , nativeQuery = true)
+  int countActiveConditionsByPatients(@Param("patientIds") List<String> patientIds);
 
   @RestResource()
   Page<ConditionModel> findAll(Specification<ConditionModel> spec, Pageable pageable);

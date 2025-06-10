@@ -45,4 +45,14 @@ public interface ObservationRepository extends CrudRepository<ObservationModel, 
           @Param("startDate") String startDate,
           @Param("endDate") String endDate
   );
+
+  @RestResource()
+  @Query(value = "SELECT * FROM observations o " +
+          "WHERE o.resource->'context'->>'reference' = :locationId " +
+          "AND o.resource->'code'->>'coding' @> :codeJson::jsonb",
+  nativeQuery = true)
+  List<ObservationModel> findByLocationAndCode(
+          @Param("locationId") String locationId,
+          @Param("codeJson") String code
+  );
 }

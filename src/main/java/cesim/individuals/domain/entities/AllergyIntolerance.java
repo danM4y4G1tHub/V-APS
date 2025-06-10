@@ -1,8 +1,11 @@
 package cesim.individuals.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record AllergyIntolerance(
         String resourceType,
         String id,
@@ -16,7 +19,7 @@ public record AllergyIntolerance(
         Reference patient,
         Encounter encounter,
         LocalDateTime onsetDateTime,
-        Age onsetAge, // Placeholder for Age
+        Age onsetAge,
         Period onsetPeriod,
         Range onsetRange,
         String onsetString,

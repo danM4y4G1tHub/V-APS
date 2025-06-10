@@ -1,11 +1,13 @@
 package cesim.individuals.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record Encounter(
         String resourceType,
         String id,
@@ -25,7 +27,7 @@ public record Encounter(
         List<Encounter.Participant> participant,
         List<Reference> appointment,
         List<VirtualServiceDetail> virtualService,
-        Period actualPeriod,
+        Period period,
         LocalDateTime plannedStartDate,
         LocalDateTime plannedEndDate,
         Duration length,
@@ -48,6 +50,7 @@ public record Encounter(
     CANCELLED("cancelled"),
     DISCONTINUED("discontinued"),
     ENTERED_IN_ERROR("entered-in-error"),
+    FINISHED("finished"),
     UNKNOWN("unknown");
 
     private final String value;
@@ -65,7 +68,7 @@ public record Encounter(
   public record Participant(
           List<CodeableConcept> type,
           Period period,
-          @JsonProperty("individual") Reference actor
+          Reference individual
   ) {
   }
 

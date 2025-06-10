@@ -1,8 +1,11 @@
 package cesim.individuals.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record Condition(
         String resourceType,
         String id,
@@ -30,7 +33,7 @@ public record Condition(
         List<Condition.Stage> stage,
         List<Reference> evidence,
         List<Annotation> note
-) {
+) { 
   public record Participant(
           CodeableConcept function,
           Reference actor

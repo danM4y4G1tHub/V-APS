@@ -8,7 +8,14 @@ public record VaccineReportDTO(
         List<UpcomingDoseAlert> upcomingDoses
 ) {
 
-  public record PatientVaccineStatus() {
+  public record PatientVaccineStatus(
+          String patientId,
+          String patientName,
+          String vaccineName,
+          int appliedDoses,
+          int totalDoses,
+          LocalDate nextDoseDate
+  ) {
   }
 
   public record UpcomingDoseAlert(

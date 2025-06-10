@@ -1,52 +1,21 @@
 package cesim.individuals.application.config;
 
+import cesim.individuals.domain.usecases.patient.*;
+import cesim.individuals.domain.usecases.patient.dependencies.*;
+import cesim.individuals.domain.usecases.person.*;
+import cesim.individuals.domain.usecases.person.dependencies.*;
+import cesim.individuals.domain.usecases.practitioner.*;
+import cesim.individuals.domain.usecases.practitioner.dependencies.*;
+import cesim.individuals.domain.usecases.relatedPerson.*;
+import cesim.individuals.domain.usecases.relatedPerson.dependencies.*;
 import cesim.individuals.domain.usecases.report.*;
 import cesim.individuals.domain.usecases.report.dependencies.*;
 import cesim.individuals.domain.usecases.specimen.GetSpecimensUseCase;
 import cesim.individuals.domain.usecases.specimen.dependencies.GetSpecimensService;
+import cesim.individuals.domain.usecases.vacinne.GenerateVaccineReportUseCase;
+import cesim.individuals.domain.usecases.vacinne.depenencies.VaccineManagementService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import cesim.individuals.domain.usecases.patient.CreatePatientUsecase;
-import cesim.individuals.domain.usecases.patient.DeletePatientUsecase;
-import cesim.individuals.domain.usecases.patient.GetPatientByIdUsecase;
-import cesim.individuals.domain.usecases.patient.SearchPatientUsecase;
-import cesim.individuals.domain.usecases.patient.UpdatePatientUsecase;
-import cesim.individuals.domain.usecases.patient.dependencies.DeletePatientService;
-import cesim.individuals.domain.usecases.patient.dependencies.GetPatientByIdService;
-import cesim.individuals.domain.usecases.patient.dependencies.SearchPatientService;
-import cesim.individuals.domain.usecases.patient.dependencies.UpdatePatientService;
-import cesim.individuals.domain.usecases.patient.dependencies.CreatePatientService;
-import cesim.individuals.domain.usecases.person.CreatePersonUsecase;
-import cesim.individuals.domain.usecases.person.DeletePersonUsecase;
-import cesim.individuals.domain.usecases.person.GetPersonByIdUsecase;
-import cesim.individuals.domain.usecases.person.SearchPersonUsecase;
-import cesim.individuals.domain.usecases.person.UpdatePersonUsecase;
-import cesim.individuals.domain.usecases.person.dependencies.CreatePersonService;
-import cesim.individuals.domain.usecases.person.dependencies.DeletePersonService;
-import cesim.individuals.domain.usecases.person.dependencies.GetPersonByIdService;
-import cesim.individuals.domain.usecases.person.dependencies.SearchPersonService;
-import cesim.individuals.domain.usecases.person.dependencies.UpdatePersonService;
-import cesim.individuals.domain.usecases.practitioner.CreatePractitionerUsecase;
-import cesim.individuals.domain.usecases.practitioner.DeletePractitionerUsecase;
-import cesim.individuals.domain.usecases.practitioner.GetPractitionerByIdUsecase;
-import cesim.individuals.domain.usecases.practitioner.SearchPractitionerUsecase;
-import cesim.individuals.domain.usecases.practitioner.UpdatePractitionerUsecase;
-import cesim.individuals.domain.usecases.practitioner.dependencies.CreatePractitionerService;
-import cesim.individuals.domain.usecases.practitioner.dependencies.DeletePractitionerService;
-import cesim.individuals.domain.usecases.practitioner.dependencies.GetPractitionerByIdService;
-import cesim.individuals.domain.usecases.practitioner.dependencies.SearchPractitionerService;
-import cesim.individuals.domain.usecases.practitioner.dependencies.UpdatePractitionerService;
-import cesim.individuals.domain.usecases.relatedPerson.CreateRelatedPersonUsecase;
-import cesim.individuals.domain.usecases.relatedPerson.DeleteRelatedPersonUsecase;
-import cesim.individuals.domain.usecases.relatedPerson.GetRelatedPersonByIdUsecase;
-import cesim.individuals.domain.usecases.relatedPerson.SearchRelatedPersonUsecase;
-import cesim.individuals.domain.usecases.relatedPerson.UpdateRelatedPersonUsecase;
-import cesim.individuals.domain.usecases.relatedPerson.dependencies.CreateRelatedPersonService;
-import cesim.individuals.domain.usecases.relatedPerson.dependencies.DeleteRelatedPersonService;
-import cesim.individuals.domain.usecases.relatedPerson.dependencies.GetRelatedPersonByIdService;
-import cesim.individuals.domain.usecases.relatedPerson.dependencies.SearchRelatedPersonService;
-import cesim.individuals.domain.usecases.relatedPerson.dependencies.UpdateRelatedPersonService;
 
 
 @Configuration
@@ -157,7 +126,7 @@ class UsecaseConfiguration {
     return new DeleteRelatedPersonUsecase(deleteRelatedPersonService);
   }
 
-  // Vigilance Primary Healthcare Attention
+  // Vigilance Primary Healthcare Attention UseCases
   //  RF02 - Urgency Patient Data
   @Bean
   GetCriticalPatientDataUseCase getCriticalPatientDataUseCase(
@@ -182,7 +151,7 @@ class UsecaseConfiguration {
     return new GenerateDerivationReportUsecase(generateDerivationReportService);
   }
 
-  //  RF05 - Advanced Patients Seach
+  //  RF05 - Advanced Patients Search
   @Bean
   AdvancedSearchUseCase advancedSearchUseCase(
           AdvancedSearchService searchService
@@ -227,5 +196,43 @@ class UsecaseConfiguration {
           StatisticsReportService reportService
   ) {
     return new GenerateStatisticsReportUseCase(reportService);
+  }
+
+  //  RF11 - Generate Vaccine Report
+  @Bean
+  public GenerateVaccineReportUseCase generateVaccineReportUseCase(
+          VaccineManagementService managementService
+  ){
+    return new GenerateVaccineReportUseCase(managementService);
+  }
+
+  // RF12 - Community reports Community-CDR
+  @Bean
+  public GenerateCommunityReportUseCase generateCommunityReportUseCase(
+          CommunityReportService reportService){
+    return new GenerateCommunityReportUseCase(reportService);
+  }
+
+  @Bean
+  public GenerateCDRReportsUseCase generateCDRReportsUseCase(
+          CommunityReportService reportService
+  ){
+    return new GenerateCDRReportsUseCase(reportService);
+  }
+
+  //  RF13 - Medical Staff Filter
+  @Bean
+  public MedicalStaffFilterUseCase medicalStaffFilterUseCase(
+          MedicalStaffFilterService filterService
+  ){
+    return new MedicalStaffFilterUseCase(filterService);
+  }
+
+  //  RF14 - Absence Report
+  @Bean
+  public GenerateAbsenceTrackingReportUseCase generateAbsenceTrackingReportUseCase(
+          AbsenceTrackingService trackingService
+  ) {
+    return new GenerateAbsenceTrackingReportUseCase(trackingService);
   }
 }

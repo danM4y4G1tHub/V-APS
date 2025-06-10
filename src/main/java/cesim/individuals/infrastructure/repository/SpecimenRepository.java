@@ -1,8 +1,9 @@
 package cesim.individuals.infrastructure.repository;
 
-import cesim.individuals.domain.utils.Page;
+
 import cesim.individuals.infrastructure.repository.models.SpecimenModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -13,7 +14,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Tag(

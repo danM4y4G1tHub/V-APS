@@ -25,6 +25,7 @@ public class PostgresGenerateDerivationReportService implements GenerateDerivati
   private final ConditionRepository conditionRepository;
   private final MedicationRequestRepository medicationRequestRepository;
   private final AllergyIntoleranceRepository allergyIntoleranceRepository;
+  // TODO: Add ServiceRequest
 
   @Override
   public DerivationReportDTO generateDerivationReport(String patientId) {

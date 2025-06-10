@@ -1,7 +1,11 @@
 package cesim.individuals.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record Address(
         Address.Type type,
         Address.Use use,
@@ -12,7 +16,9 @@ public record Address(
         String district,
         String postalCode,
         String state,
-        String text) {
+        String text,
+        Reference location
+) {
 
     public enum Type {
         POSTAL("postal"),
@@ -25,15 +31,16 @@ public record Address(
             this.value = value;
         }
 
+        @JsonValue
         public String getValue() {
             return value;
         }
     }
 
     public enum Use {
-        HOME("home"), 
-        WORK("work"), 
-        TEMP("temp"), 
+        HOME("home"),
+        WORK("work"),
+        TEMP("temp"),
         OLD("old"),
         BILLING("billing");
 
@@ -41,6 +48,8 @@ public record Address(
         Use(String value) {
             this.value = value;
         }
+
+        @JsonValue
         public String getValue() {
             return value;
         }

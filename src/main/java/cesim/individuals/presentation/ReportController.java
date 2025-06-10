@@ -2,16 +2,17 @@ package cesim.individuals.presentation;
 
 import cesim.individuals.application.report.ReportScheduler;
 import cesim.individuals.domain.entities.report.outputDTO.*;
+import cesim.individuals.domain.entities.report.specInput.AbsenceTrackingSpec;
 import cesim.individuals.domain.entities.report.specInput.AdvancedSearchRequestSpec;
 import cesim.individuals.domain.entities.report.specInput.ClinicalReportFilterSpec;
 import cesim.individuals.domain.entities.report.specInput.RecentEncounterSpec;
 import cesim.individuals.domain.usecases.report.*;
 import cesim.individuals.domain.utils.Page;
 import cesim.individuals.domain.utils.Pageable;
-import lombok.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.YearMonth;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -25,16 +26,20 @@ public class ReportController {
   private final GetRecentEncountersUseCase recentEncountersUseCase;
   private final AssessPatientsRiskUseCase assessPatientsRiskUsecase;
   private final ReportScheduler reportScheduler;
+  private final GenerateCommunityReportUseCase generateCommunityReportUseCase;
+  private final GenerateCDRReportsUseCase generateCDRReportsUseCase;
+  private final MedicalStaffFilterUseCase medicalStaffFilterUseCase;
+  private final GenerateAbsenceTrackingReportUseCase generateAbsenceTrackingReportUseCase;
 
-  @GetMapping("/derivation/{patienId}")
-  public CompletableFuture<DerivationReportDTO> generateDerivationReport(@PathVariable String patienId) {
+  @GetMapping("/derivation/{patientId}")
+  public CompletableFuture<DerivationReportDTO> generateDerivationReport(@PathVariable String patientId) {
     return derivationReportUseCase.execute(
-                    new GenerateDerivationReportUsecase.Input(patienId))
+                    new GenerateDerivationReportUsecase.Input(patientId))
             .thenApply(GenerateDerivationReportUsecase.Output::derivationReport);
   }
 
   @GetMapping("/urgency/{CI}")
-  public CompletableFuture<CriticalPatientDataDTO> getCriticalPatienData(@PathVariable String CI) {
+  public CompletableFuture<CriticalPatientDataDTO> getCriticalPatientData(@PathVariable String CI) {
     return criticalPatientDataUseCase.execute(
                     new GetCriticalPatientDataUseCase.Input(CI))
             .thenApply(GetCriticalPatientDataUseCase.Output::patientData);
@@ -55,7 +60,7 @@ public class ReportController {
     ).thenApply(ClinicalReportFilterUseCase.Output::clinicalReportDTO);
   }
 
-  @PostMapping("/search")
+    @PostMapping("/search")
   public CompletableFuture<AdvancedSearchResultsDTO> advancedSearch(
           @RequestParam(defaultValue = "0") int page,
           @RequestParam(defaultValue = "10") int size,
@@ -109,4 +114,53 @@ public class ReportController {
 
   // Download PDF ReportMonthly
   // Download EXCEL ReportMonthly
+
+  @GetMapping("/community/{communityId}")
+  public CompletableFuture<CommunityReportDTO> generateCommunityReport(
+          @PathVariable String communityId
+  ){
+    return generateCommunityReportUseCase.execute(
+            new GenerateCommunityReportUseCase.Input(communityId)
+            )
+            .thenApply(GenerateCommunityReportUseCase.Output::reportDTO);
+  }
+
+  @GetMapping("/cdrs/{communityId}")
+  public CompletableFuture<List<CDRReportDTO>> generateCDRReports(
+          @PathVariable String communityId
+  ){
+    return generateCDRReportsUseCase.execute(
+            new GenerateCDRReportsUseCase.Input(communityId)
+    ).thenApply(GenerateCDRReportsUseCase.Output::reportDTO);
+  }
+
+  @GetMapping("/medical-staff")
+  public CompletableFuture<Page<MedicalStaffCountDTO>> generateMedicaStaffFilter(
+          @RequestParam(defaultValue = "0") int page,
+          @RequestParam(defaultValue = "10") int size,
+          @RequestParam(defaultValue = "asc") String sortDirection,
+          @RequestParam(defaultValue = "id") String sortBy
+  ){
+    return medicalStaffFilterUseCase.execute(
+            new MedicalStaffFilterUseCase.Input(
+                    new Pageable(page, size, sortBy, sortDirection)
+            )
+    ).thenApply(MedicalStaffFilterUseCase.Output::resultsDTO);
+  }
+
+  @PostMapping("/absence")
+  public CompletableFuture<Page<AbsenceReportDTO>> absenceTrackingReport(
+          @RequestParam(defaultValue = "0") int page,
+          @RequestParam(defaultValue = "10") int size,
+          @RequestParam(defaultValue = "asc") String sortDirection,
+          @RequestParam(defaultValue = "id") String sortBy,
+          @RequestBody() AbsenceTrackingSpec trackingSpec
+          ){
+    return generateAbsenceTrackingReportUseCase.execute(
+            new GenerateAbsenceTrackingReportUseCase.Input(
+                    new Pageable(page, size, sortBy, sortDirection),
+                    trackingSpec
+            )
+    ).thenApply(GenerateAbsenceTrackingReportUseCase.OutPut::reportDTO);
+  }
 }

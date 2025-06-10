@@ -5,7 +5,7 @@ public record Property(
         String description,
         Property.Type type,
         String uri) {
-            
+
     public enum Type {
         STRING("string"),
         INTEGER("integer"),

@@ -1,7 +1,6 @@
 package cesim.individuals.presentation;
 
 import org.springframework.web.bind.annotation.*;
-import cesim.individuals.domain.usecases.*;
 import cesim.individuals.domain.usecases.practitioner.CreatePractitionerUsecase;
 import cesim.individuals.domain.usecases.practitioner.DeletePractitionerUsecase;
 import cesim.individuals.domain.usecases.practitioner.GetPractitionerByIdUsecase;

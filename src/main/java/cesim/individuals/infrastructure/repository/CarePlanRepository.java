@@ -21,7 +21,8 @@ public interface CarePlanRepository extends CrudRepository<CarePlanModel, String
 
   @RestResource(exported = true)
   @Query(value =
-          "SELECT * FROM care_plans c WHERE c.resource->'subject'->>'reference' = CONCAT('Patient/', :patientId)",
+          "SELECT * FROM care_plans c " +
+          "WHERE c.resource->'subject'->>'reference' = CONCAT('Patient/', :patientId)",
           nativeQuery = true
   )
   List<CarePlanModel> findByPatientId(@Param("patientId") String patientId);
@@ -29,8 +30,8 @@ public interface CarePlanRepository extends CrudRepository<CarePlanModel, String
   @RestResource(exported = true)
   @Query(value =
           "SELECT * FROM care_plans cp " +
-                  "WHERE cp.resource->'status' = 'active' " +
-                  "AND cp.resource->'period'->>end = :endDate"
+          "WHERE cp.resource->'status' = 'active' " +
+          "AND cp.resource->'period'->>end = :endDate"
           , nativeQuery = true)
   List<CarePlanModel> findActiveEndingToday(@Param("endDate") String endDate);
 }

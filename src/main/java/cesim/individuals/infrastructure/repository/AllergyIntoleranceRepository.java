@@ -18,7 +18,8 @@ import java.util.List;
 public interface AllergyIntoleranceRepository extends CrudRepository<AllergyIntoleranceModel, String> {
   @RestResource()
   @Query(value =
-          "SELECT * FROM allergy_intolerances a WHERE a.resource->'patient'->>'reference' = CONCAT('Patient/', :patientId)",
+          "SELECT * FROM allergy_intolerances a " +
+                  "WHERE a.resource->'patient'->>'reference' = CONCAT('Patient/', :patientId)",
           nativeQuery = true)
   List<AllergyIntoleranceModel> findByPatientId(@Param("patientId") String patientId);
 }

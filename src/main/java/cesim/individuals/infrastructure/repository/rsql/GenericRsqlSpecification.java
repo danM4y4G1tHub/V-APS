@@ -29,7 +29,7 @@ public class GenericRsqlSpecification<T> implements Specification<T> {
     public Predicate toPredicate(@NonNull Root<T> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
         List<Object> args = castArguments(root);
         Object argument = args.get(0);
-        
+
         switch (RsqlSearchOperation.getSimpleOperator(operator)) {
             case EQUAL: {
                 if (argument instanceof String) {

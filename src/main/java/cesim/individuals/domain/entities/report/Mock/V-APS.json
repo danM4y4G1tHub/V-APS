@@ -1,0 +1,525 @@
+{
+  "patients": [
+    {
+      "resourceType": "Patient",
+      "id": "bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a",
+      "identifier": [
+        {"system": "http://minsap.cu/ci", "value": "85010112345"}
+      ],
+      "active": true,
+      "name": [
+        {"use": "official", "family": "García", "given": ["Carlos"]}
+      ],
+      "telecom": [
+        {"system": "phone", "value": "+5355512345"}
+      ],
+      "gender": "male",
+      "birthDate": "1985-01-01",
+      "address": [
+        {
+          "use": "home",
+          "line": ["Calle 23 #456"],
+          "city": "La Habana",
+          "state": "La Habana",
+          "postalCode": "10400"
+        }
+      ]
+    },
+    {
+      "resourceType": "Patient",
+      "id": "d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a",
+      "identifier": [
+        {"system": "http://minsap.cu/ci", "value": "92020254321"}
+      ],
+      "active": true,
+      "name": [
+        {"use": "official", "family": "Rodríguez", "given": ["María", "Elena"]}
+      ],
+      "telecom": [
+        {"system": "phone", "value": "+5355567890"}
+      ],
+      "gender": "female",
+      "birthDate": "1992-02-02",
+      "address": null
+    },
+    {
+      "resourceType": "Patient",
+      "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+      "identifier": [
+        {"system": "http://minsap.cu/ci", "value": "75030398765"}
+      ],
+      "active": true,
+      "name": [
+        {"use": "official", "family": "Pérez", "given": ["Juan"]}
+      ],
+      "gender": "male",
+      "birthDate": "1975-03-03",
+      "address": [
+        {
+          "use": "home",
+          "line": ["Avenida 7 #123"],
+          "city": "Santiago de Cuba",
+          "state": "Santiago de Cuba",
+          "postalCode": "90100"
+        }
+      ]
+    }
+  ],
+  "conditions": [
+    {
+      "resourceType": "Condition",
+      "id": "6d7e8f9a-1b2c-3d4e-5f6a-7b8c9d0e1f2a",
+      "clinicalStatus": {
+        "coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]
+      },
+      "code": {
+        "coding": [{"system": "http://snomed.info/sct", "code": "44054006", "display": "Diabetes mellitus type 2"}]
+      },
+      "subject": {"reference": "Patient/bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a"},
+      "recordedDate": "2023-05-15T14:30:00Z"
+    },
+    {
+      "resourceType": "Condition",
+      "id": "9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d",
+      "clinicalStatus": {
+        "coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]
+      },
+      "code": {
+        "coding": [{"system": "http://snomed.info/sct", "code": "38341003", "display": "Hypertension"}]
+      },
+      "subject": {"reference": "Patient/d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a"},
+      "recordedDate": "2023-06-20T10:15:00Z"
+    },
+    {
+      "resourceType": "Condition",
+      "id": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+      "clinicalStatus": null,
+      "code": {
+        "coding": [{"system": "http://snomed.info/sct", "code": "195967001", "display": "Asthma"}]
+      },
+      "subject": {"reference": "Patient/1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"},
+      "recordedDate": "2023-07-10T08:45:00Z"
+    }
+  ],
+  "medicationRequests": [
+    {
+      "resourceType": "MedicationRequest",
+      "id": "5d6e7f8a-9b0c-1d2e-3f4a-5b6c7d8e9f0a",
+      "status": "active",
+      "intent": "order",
+      "medication": {
+        "reference": "Medication/123456789",
+        "display": "Metformina"
+      },
+      "subject": {"reference": "Patient/bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a"},
+      "dosageInstruction": [
+        {"text": "Tomar una tableta dos veces al día con las comidas"}
+      ]
+    },
+    {
+      "resourceType": "MedicationRequest",
+      "id": "0f1e2d3c-4b5a-6f7e-8d9c-0b1a2c3d4e5f",
+      "status": "active",
+      "intent": "order",
+      "medication": {
+        "reference": "Medication/987654321",
+        "display": "Losartan"
+      },
+      "subject": {"reference": "Patient/d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a"},
+      "dosageInstruction": null
+    },
+    {
+      "resourceType": "MedicationRequest",
+      "id": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+      "status": "active",
+      "intent": "order",
+      "medication": {
+        "reference": "Medication/456789123",
+        "display": "Salbutamol"
+      },
+      "subject": {"reference": "Patient/1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"},
+      "dosageInstruction": [
+        {"text": "Inhalar 2 veces al día"}
+      ]
+    }
+  ],
+  "allergyIntolerances": [
+    {
+      "resourceType": "AllergyIntolerance",
+      "id": "b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e",
+      "clinicalStatus": {
+        "coding": [{"system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical", "code": "active"}]
+      },
+      "code": {
+        "coding": [{"system": "http://snomed.info/sct", "code": "91930004", "display": "Penicillin"}]
+      },
+      "patient": {"reference": "Patient/bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a"},
+      "criticality": "high"
+    },
+    {
+      "resourceType": "AllergyIntolerance",
+      "id": "c3d4e5f6-a7b8-9c0d-1e2f-3a4b5c6d7e8f",
+      "clinicalStatus": {
+        "coding": [{"system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical", "code": "active"}]
+      },
+      "code": {
+        "coding": [{"system": "http://snomed.info/sct", "code": "256259004", "display": "Ibuprofen"}]
+      },
+      "patient": {"reference": "Patient/d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a"},
+      "criticality": "medium"
+    },
+    {
+      "resourceType": "AllergyIntolerance",
+      "id": "d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a",
+      "clinicalStatus": null,
+      "code": {
+        "coding": [{"system": "http://snomed.info/sct", "code": "419199007", "display": "Allergy to seafood"}]
+      },
+      "patient": {"reference": "Patient/1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"}
+    }
+  ],
+  "serviceRequests": [
+    {
+      "resourceType": "ServiceRequest",
+      "id": "e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b",
+      "status": "active",
+      "intent": "order",
+      "code": {
+        "coding": [{"system": "http://snomed.info/sct", "code": "183658006", "display": "Referral to cardiology service"}]
+      },
+      "subject": {"reference": "Patient/d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a"},
+      "occurrence": "2023-10-10T09:00:00Z",
+      "requester": {"reference": "Practitioner/12345678-1234-1234-1234-123456789abc"},
+      "basedOn": [{"reference": "Condition/9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d"}]
+    },
+    {
+      "resourceType": "ServiceRequest",
+      "id": "f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c",
+      "status": "active",
+      "intent": "order",
+      "code": {
+        "coding": [{"system": "http://snomed.info/sct", "code": "3457005", "display": "Referral to endocrinology service"}]
+      },
+      "subject": {"reference": "Patient/bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a"},
+      "occurrence": "2023-10-11T10:30:00Z",
+      "requester": {"reference": "Practitioner/12345678-1234-1234-1234-123456789abc"}
+    },
+    {
+      "resourceType": "ServiceRequest",
+      "id": "a7b8c9d0-e1f2-3a4b-5c6d-7e8f9a0b1c2d",
+      "status": "active",
+      "intent": "order",
+      "code": {
+        "coding": [{"system": "http://snomed.info/sct", "code": "306125004", "display": "Referral to pulmonology service"}]
+      },
+      "subject": {"reference": "Patient/1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"},
+      "occurrence": null
+    }
+  ],
+  "encounters": [
+    {
+      "resourceType": "Encounter",
+      "id": "8f9a0b1c-2d3e-4f5a-6b7c-8d9e0f1a2b3c",
+      "status": "finished",
+      "classfhir": {"code": "AMB"},
+      "type": [
+        {"coding": [{"system": "http://snomed.info/sct", "code": "185349003", "display": "Encounter for check up"}]}
+      ],
+      "subject": {"reference": "Patient/bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a"},
+      "period": {
+        "start": "2023-10-05T08:00:00Z",
+        "end": "2023-10-05T08:30:00Z"
+      }
+    },
+    {
+      "resourceType": "Encounter",
+      "id": "9a0b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d",
+      "status": "finished",
+      "classfhir": {"code": "AMB"},
+      "type": [
+        {"coding": [{"system": "http://snomed.info/sct", "code": "185349003", "display": "Encounter for check up"}]}
+      ],
+      "subject": {"reference": "Patient/d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a"},
+      "period": {
+        "start": "2023-10-06T09:15:00Z",
+        "end": "2023-10-06T10:00:00Z"
+      }
+    },
+    {
+      "resourceType": "Encounter",
+      "id": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+      "status": "finished",
+      "classfhir": null,
+      "subject": {"reference": "Patient/1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"},
+      "period": {
+        "start": "2023-10-07T11:00:00Z",
+        "end": "2023-10-07T11:45:00Z"
+      }
+    }
+  ],
+  "carePlans": [
+    {
+      "resourceType": "CarePlan",
+      "id": "2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a",
+      "status": "active",
+      "intent": "plan",
+      "subject": {"reference": "Patient/bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a"},
+      "period": {
+        "start": "2023-10-01",
+        "end": "2024-10-01"
+      }
+    },
+    {
+      "resourceType": "CarePlan",
+      "id": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
+      "status": "active",
+      "intent": "plan",
+      "subject": {"reference": "Patient/d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a"},
+      "period": {
+        "start": "2023-10-01",
+        "end": "2024-10-01"
+      }
+    },
+    {
+      "resourceType": "CarePlan",
+      "id": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+      "status": "active",
+      "intent": "plan",
+      "subject": {"reference": "Patient/1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"},
+      "period": {
+        "start": "2023-10-01",
+        "end": null
+      }
+    }
+  ],
+  "immunizations": [
+    {
+      "resourceType": "Immunization",
+      "id": "5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d",
+      "status": "completed",
+      "vaccineCode": {
+        "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "207", "display": "COVID-19, mRNA, LNP-S, PF, 100 mcg/0.5 mL dose"}]
+      },
+      "patient": {"reference": "Patient/bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a"},
+      "occurrenceDateTime": "2021-08-15T10:00:00Z"
+    },
+    {
+      "resourceType": "Immunization",
+      "id": "6b7c8d9e-0f1a-2b3c-4d5e-6f7a8b9c0d1e",
+      "status": "completed",
+      "vaccineCode": {
+        "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "88", "display": "Influenza, split, including A-H1N1, preservative free"}]
+      },
+      "patient": {"reference": "Patient/d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a"},
+      "occurrenceDateTime": "2023-10-01T11:30:00Z"
+    },
+    {
+      "resourceType": "Immunization",
+      "id": "7c8d9e0f-1a2b-3c4d-5e6f-7a8b9c0d1e2f",
+      "status": "completed",
+      "vaccineCode": null,
+      "patient": {"reference": "Patient/1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"},
+      "occurrenceDateTime": "2023-10-02T09:15:00Z"
+    }
+  ],
+  "observations": [
+    {
+      "resourceType": "Observation",
+      "id": "8d9e0f1a-2b3c-4d5e-6f7a-8b9c0d1e2f3a",
+      "status": "final",
+      "code": {
+        "coding": [{"system": "http://loinc.org", "code": "8480-6", "display": "Systolic blood pressure"}]
+      },
+      "subject": {"reference": "Patient/d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a"},
+      "effectiveDateTime": "2023-10-05T08:00:00Z",
+      "valueQuantity": {
+        "value": 120,
+        "unit": "mmHg"
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "9e0f1a2b-3c4d-5e6f-7a8b-9c0d1e2f3a4b",
+      "status": "final",
+      "code": {
+        "coding": [{"system": "http://loinc.org", "code": "15074-8", "display": "Glucose [Moles/volume] in Blood"}]
+      },
+      "subject": {"reference": "Patient/bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a"},
+      "effectiveDateTime": "2023-10-05T08:30:00Z",
+      "valueQuantity": {
+        "value": 5.6,
+        "unit": "mmol/L"
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "0f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+      "status": "final",
+      "subject": {"reference": "Patient/1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"},
+      "effectiveDateTime": "2023-10-05T09:00:00Z",
+      "valueQuantity": null
+    }
+  ],
+  "specimens": [
+    {
+      "resourceType": "Specimen",
+      "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+      "status": "available",
+      "type": {
+        "coding": [{"system": "http://snomed.info/sct", "code": "122555007", "display": "Venous blood specimen"}]
+      },
+      "subject": {"reference": "Patient/bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a"},
+      "collection": {
+        "collectedDateTime": "2023-10-05T10:00:00Z"
+      }
+    },
+    {
+      "resourceType": "Specimen",
+      "id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+      "status": "available",
+      "type": {
+        "coding": [{"system": "http://snomed.info/sct", "code": "258580003", "display": "Urine specimen"}]
+      },
+      "subject": {"reference": "Patient/d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a"},
+      "collection": {
+        "collectedDateTime": "2023-10-05T11:00:00Z"
+      }
+    },
+    {
+      "resourceType": "Specimen",
+      "id": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+      "status": "available",
+      "type": null,
+      "subject": {"reference": "Patient/1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"}
+    }
+  ],
+  "practitioners": [
+    {
+      "resourceType": "Practitioner",
+      "id": "12345678-1234-1234-1234-123456789abc",
+      "identifier": [
+        {"system": "http://minsap.cu/licencia", "value": "DOC123"}
+      ],
+      "active": true,
+      "name": [
+        {"use": "official", "family": "López", "given": ["Ana"]}
+      ],
+      "telecom": [
+        {"system": "phone", "value": "+5355512345"}
+      ]
+    },
+    {
+      "resourceType": "Practitioner",
+      "id": "23456789-2345-2345-2345-23456789abcd",
+      "identifier": [
+        {"system": "http://minsap.cu/licencia", "value": "DOC456"}
+      ],
+      "active": true,
+      "name": [
+        {"use": "official", "family": "Martínez", "given": ["Pedro"]}
+      ]
+    },
+    {
+      "resourceType": "Practitioner",
+      "id": "34567890-3456-3456-3456-34567890abcde",
+      "active": true,
+      "name": null
+    }
+  ],
+  "relatedPersons": [
+    {
+      "resourceType": "RelatedPerson",
+      "id": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
+      "patient": {"reference": "Patient/bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a"},
+      "relationship": [
+        {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode", "code": "WIFE", "display": "wife"}]}
+      ],
+      "name": [
+        {"family": "García", "given": ["Laura"]}
+      ]
+    },
+    {
+      "resourceType": "RelatedPerson",
+      "id": "5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
+      "patient": {"reference": "Patient/d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a"},
+      "relationship": [
+        {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode", "code": "HUSB", "display": "husband"}]}
+      ],
+      "name": [
+        {"family": "Rodríguez", "given": ["José"]}
+      ]
+    },
+    {
+      "resourceType": "RelatedPerson",
+      "id": "6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
+      "patient": {"reference": "Patient/1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"},
+      "relationship": null
+    }
+  ],
+  "locations": [
+    {
+      "resourceType": "Location",
+      "id": "7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d",
+      "status": "active",
+      "name": "Policlínico Plaza",
+      "address": {
+        "line": ["Calle 1 #123"],
+        "city": "La Habana",
+        "state": "La Habana",
+        "postalCode": "10400"
+      }
+    },
+    {
+      "resourceType": "Location",
+      "id": "8b9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c2d3e",
+      "status": "active",
+      "name": "Hospital General Santiago",
+      "address": {
+        "line": ["Avenida 5 #678"],
+        "city": "Santiago de Cuba",
+        "state": "Santiago de Cuba",
+        "postalCode": "90100"
+      }
+    },
+    {
+      "resourceType": "Location",
+      "id": "9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f",
+      "status": "active",
+      "name": null
+    }
+  ],
+  "organizations": [
+    {
+      "resourceType": "Organization",
+      "id": "0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a",
+      "name": "Hospital Universitario",
+      "address": [
+        {
+          "line": ["Calle 10 #456"],
+          "city": "La Habana",
+          "state": "La Habana",
+          "postalCode": "10400"
+        }
+      ]
+    },
+    {
+      "resourceType": "Organization",
+      "id": "1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b",
+      "name": "Clínica Central",
+      "address": [
+        {
+          "line": ["Avenida 3 #789"],
+          "city": "Camagüey",
+          "state": "Camagüey",
+          "postalCode": "70100"
+        }
+      ]
+    },
+    {
+      "resourceType": "Organization",
+      "id": "2f3a4b5c-6d7e-8f9a-0b1c-2d3e4f5a6b7c",
+      "name": "Centro de Salud",
+      "address": null
+    }
+  ]
+}

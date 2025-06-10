@@ -29,13 +29,13 @@ public class PostgresSpecimenService implements GetSpecimensService {
             pageable.size(),
             sort));
 
-    List<Specimen> specimens = specimenResults.items().stream().map(
+    List<Specimen> specimens = specimenResults.getContent().stream().map(
             SpecimenModel::getResource).toList();
 
     return new Page<>(
-            specimenResults.pageNumber(),
-            specimenResults.pageSize(),
-            specimenResults.totalPages(),
+            specimenResults.getNumber(),
+            specimenResults.getSize(),
+            specimenResults.getTotalPages(),
             specimens
     );
   }

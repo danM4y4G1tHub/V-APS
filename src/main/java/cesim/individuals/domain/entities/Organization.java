@@ -1,9 +1,14 @@
 
 package cesim.individuals.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record Organization(
+        String resourceType,
+        String id,
         List<Identifier> identifier,
         Boolean active,
         String name,
@@ -15,5 +20,5 @@ public record Organization(
         Reference endpoint,
         OrganizationQualification qualification
 ) {
-    
+
 }
