@@ -21,6 +21,7 @@ public class VaccineController {
   private final GenerateVaccineReportUseCase generateVaccineReportUseCase;
   private final VaccineManagementService managementService;
 
+  //RF11
   @GetMapping("/report")
   public CompletableFuture<VaccineReportDTO> generateVaccineReport(
           @RequestParam(value = "date", required = false)
@@ -33,7 +34,7 @@ public class VaccineController {
     ).thenApply(GenerateVaccineReportUseCase.Output::reportDTO);
   }
 
-  @GetMapping("schedule")
+  @GetMapping("/schedule")
   public ResponseEntity<List<ImmunizationRecommendation>> getVaccineSchedules() {
     return ResponseEntity.ok(managementService.getVaccineRecommendations());
   }

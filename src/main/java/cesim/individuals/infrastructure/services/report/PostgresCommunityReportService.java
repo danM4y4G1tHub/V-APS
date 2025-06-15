@@ -73,10 +73,10 @@ public class PostgresCommunityReportService implements CommunityReportService {
   }
 
   private int calculateCleanlinessScore(String locationId){
-    String codeJson = "[{\"code\":\"cleanliness-score\"}]";
+    String code = "cleanliness-score";
 
     List<ObservationModel> observations = observationRepository.findByLocationAndCode(
-            locationId, codeJson);
+            locationId, code);
 
     return (int) observations.stream().
             mapToInt(obs -> obs.getResource().valueQuantity().value().intValue())

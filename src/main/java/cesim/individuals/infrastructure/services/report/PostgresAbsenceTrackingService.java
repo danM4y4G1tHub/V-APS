@@ -27,6 +27,8 @@ public class PostgresAbsenceTrackingService implements AbsenceTrackingService {
 
   @Override
   public Page<AbsenceReportDTO> findAbsences(Pageable pageable, AbsenceTrackingSpec spec) {
+    if(spec == null) throw new IllegalArgumentException("StartDate and EndDate missing");
+
     var appointmentSort = Sort.by(
             pageable.sortDirection().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
             pageable.sortBy());

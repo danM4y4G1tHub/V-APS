@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -33,6 +34,10 @@ public class PostgresGetEncounterService implements GetRecentEncounterService {
 
   @Override
   public Page<RecentEncounterDTO> getRecentEncounters(Pageable pageable, RecentEncounterSpec encounterSpec) {
+    if(encounterSpec.practitionerId() == null || encounterSpec.practitionerId().isBlank()){
+      throw new IllegalArgumentException("Practitioner id param missing");
+    }
+
     if(encounterSpec.startDate() == null && encounterSpec.endDate() == null){
       throw new IllegalArgumentException("Start date and end date missing");
     }
@@ -48,9 +53,6 @@ public class PostgresGetEncounterService implements GetRecentEncounterService {
                     .plusDays(1)
                     .atStartOfDay(ZoneId.systemDefault())
                     .toInstant());
-
-//    String startDate = encounterSpec.startDate().toString();
-//    String endDate = encounterSpec.endDate().plusDays(1).toString();
 
     String practitionerRef = "Practitioner/" + encounterSpec.practitionerId();
 
@@ -75,21 +77,18 @@ public class PostgresGetEncounterService implements GetRecentEncounterService {
 
     List<String> practitionerIds = encounterResults.getContent().stream()
             .map(e ->
-                    e.getResource().participant().get(0).individual().reference().split("/")[0])
+                    e.getResource().participant().get(0).actor().reference().split("/")[0])
             .distinct().toList();
 
     List<RecentEncounterDTO> encounterDTOS = encounterResults.getContent().stream()
             .map(encounter -> {
-              Date dateObj = encounter.getResource().period().start();
-              LocalDateTime date = dateObj.toInstant()
-                      .atZone(ZoneId.systemDefault())
-                      .toLocalDateTime();
+              Instant date = encounter.getResource().actualPeriod().start();
 
               String type = encounter.getResource().type().get(0).coding().get(0).display();
 
               String patientId = encounter.getResource().subject().reference().split("/")[1];
               String practitionerIdRef = encounter.getResource()
-                      .participant().get(0).individual().reference().split("/")[1];
+                      .participant().get(0).actor().reference().split("/")[1];
 
               return new RecentEncounterDTO(
                       date,

@@ -1,0 +1,254 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CarePlan</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cesim.individuals.domain.entities</a>
+</div>
+
+<h1>Coverage Summary for Class: CarePlan (cesim.individuals.domain.entities)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CarePlan</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CarePlan$Activity</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">CarePlan$Intent</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">CarePlan$Status</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (23/23)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cesim.individuals.domain.entities;
+&nbsp;
+&nbsp;import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+&nbsp;import com.fasterxml.jackson.annotation.JsonInclude;
+&nbsp;import com.fasterxml.jackson.annotation.JsonValue;
+&nbsp;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;import java.util.List;
+&nbsp;
+<b class="fc">&nbsp;@JsonIgnoreProperties(ignoreUnknown = true)</b>
+&nbsp;@JsonInclude(JsonInclude.Include.NON_NULL)
+<b class="fc">&nbsp;public record CarePlan(</b>
+&nbsp;        String resourceType,
+&nbsp;        String id,
+&nbsp;        List&lt;Identifier&gt; identifier,
+&nbsp;        List&lt;String&gt; instantiatesCanonical,
+&nbsp;        List&lt;String&gt; instantiatesUri,
+&nbsp;        List&lt;Reference&gt; basedOn,
+&nbsp;        List&lt;Reference&gt; replaces,
+&nbsp;        List&lt;Reference&gt; partOf,
+&nbsp;        CarePlan.Status status,
+&nbsp;        CarePlan.Intent intent,
+&nbsp;        List&lt;CodeableConcept&gt; category,
+&nbsp;        String title,
+&nbsp;        String description,
+&nbsp;        Reference subject,
+&nbsp;        Reference encounter,
+&nbsp;        Period period,
+&nbsp;        LocalDateTime created,
+&nbsp;        Reference custodian,
+&nbsp;        List&lt;Reference&gt; contributor,
+&nbsp;        List&lt;Reference&gt; careTeam,
+&nbsp;        List&lt;Reference&gt; addresses,
+&nbsp;        List&lt;Reference&gt; supportingInfo,
+&nbsp;        List&lt;Reference&gt; goal,
+&nbsp;        List&lt;CarePlan.Activity&gt; activity,
+&nbsp;        List&lt;Annotation&gt; note
+&nbsp;) {
+&nbsp;  // Nested enum for CarePlan Status
+<b class="fc">&nbsp;  public enum Status {</b>
+<b class="fc">&nbsp;    DRAFT(&quot;draft&quot;),</b>
+<b class="fc">&nbsp;    ACTIVE(&quot;active&quot;),</b>
+<b class="fc">&nbsp;    ON_HOLD(&quot;on-hold&quot;),</b>
+<b class="fc">&nbsp;    REVOKED(&quot;revoked&quot;),</b>
+<b class="fc">&nbsp;    COMPLETED(&quot;completed&quot;),</b>
+<b class="fc">&nbsp;    ENTERED_IN_ERROR(&quot;entered-in-error&quot;),</b>
+<b class="fc">&nbsp;    UNKNOWN(&quot;unknown&quot;);</b>
+&nbsp;
+&nbsp;    private final String value;
+&nbsp;
+<b class="fc">&nbsp;    Status(String value) {</b>
+<b class="fc">&nbsp;      this.value = value;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @JsonValue
+&nbsp;    public String getValue() {
+<b class="fc">&nbsp;      return value;</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+<b class="fc">&nbsp;  public enum Intent {</b>
+<b class="fc">&nbsp;    PROPOSAL(&quot;proposal&quot;),</b>
+<b class="fc">&nbsp;    PLAN(&quot;plan&quot;),</b>
+<b class="fc">&nbsp;    ORDER(&quot;order&quot;),</b>
+<b class="fc">&nbsp;    OPTION(&quot;option&quot;),</b>
+<b class="fc">&nbsp;    DIRECTIVE(&quot;directive&quot;);</b>
+&nbsp;
+&nbsp;    private final String value;
+&nbsp;
+<b class="fc">&nbsp;    Intent(String value) {</b>
+<b class="fc">&nbsp;      this.value = value;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @JsonValue
+&nbsp;    public String getValue() {
+<b class="fc">&nbsp;      return value;</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+<b class="fc">&nbsp;  public record Activity(</b>
+&nbsp;          List&lt;Reference&gt; performedActivity,
+&nbsp;          List&lt;Annotation&gt; progress,
+&nbsp;          Reference plannedActivityReference
+&nbsp;  ) {
+&nbsp;  }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-15 01:28</div>
+</div>
+</body>
+</html>

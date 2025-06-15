@@ -31,7 +31,4 @@ public class GetCriticalPatientDataUseCase implements Usecase<GetCriticalPatient
 
   public record Output(CriticalPatientDataDTO patientData) {
   }
-
-  public static class ReportFilterUseCase {
-  }
 }

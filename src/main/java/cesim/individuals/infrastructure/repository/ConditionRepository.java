@@ -52,7 +52,7 @@ public interface ConditionRepository extends JpaRepository<ConditionModel, Strin
   @RestResource()
   @Query(value = "SELECT COUNT(DISTINCT c.id) FROM conditions c " +
           "WHERE c.resource->'subject'->>'reference' LIKE 'Patient/%' " +
-          "AND split_part(c.resource->'subject'->>reference, '/', 2) IN :patientIds " +
+          "AND split_part(c.resource->'subject'->>'reference', '/', 2) IN :patientIds " +
           "AND c.resource->>'clinicalStatus' = 'active'"
   , nativeQuery = true)
   int countActiveConditionsByPatients(@Param("patientIds") List<String> patientIds);

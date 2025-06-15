@@ -1,11 +1,19 @@
 package cesim.individuals.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record Appointment(
+        String resourceType,
+        String id,
         List<Identifier> identifier,
         Appointment.Status status,
         CodeableConcept cancellationReason,
@@ -50,7 +58,8 @@ public record Appointment(
     NOSHOW("noshow"),
     ENTERED_IN_ERROR("entered-in-error"),
     CHECKED_IN("checked-in"),
-    WAITLIST("waitlist");
+    WAITLIST("waitlist"),
+    FINISHED("finished");
 
     private final String value;
 
@@ -58,6 +67,7 @@ public record Appointment(
       this.value = value;
     }
 
+    @JsonValue
     public String getValue() {
       return value;
     }
@@ -83,6 +93,7 @@ public record Appointment(
         this.value = value;
       }
 
+      @JsonValue
       public String getValue() {
         return value;
       }
@@ -116,6 +127,7 @@ public record Appointment(
         this.value = value;
       }
 
+      @JsonValue
       public String getValue() {
         return value;
       }

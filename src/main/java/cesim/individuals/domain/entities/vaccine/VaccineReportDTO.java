@@ -1,6 +1,7 @@
 package cesim.individuals.domain.entities.vaccine;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record VaccineReportDTO(

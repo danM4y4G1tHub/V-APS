@@ -11,7 +11,9 @@ import cesim.individuals.infrastructure.repository.models.PatientModel;
 import cesim.individuals.infrastructure.repository.models.PractitionerModel;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,12 +28,14 @@ public class PostgresCarePlanNotificationsService implements CarePlanNotificatio
 
   public List<CarePlanNotificationDTO> generateCarePlanClosureNotifications() {
     LocalDate today = LocalDate.now();
-    List<CarePlanModel> carePlanModels = carePlanRepository.findActiveEndingToday(today.toString());
+    List<CarePlanModel> carePlanModels = carePlanRepository.findActiveEndingToday(today);
 
     return createCarePlanNotificationDTO(carePlanModels);
   }
 
   private List<CarePlanNotificationDTO> createCarePlanNotificationDTO(List<CarePlanModel> carePlanModels) {
+    if(carePlanModels == null || carePlanModels.size() == 0) return new ArrayList<>();
+
     List<CarePlanNotificationDTO> notificationDTOS = carePlanModels.stream().
             map(cp -> {
               CarePlan carePlan = cp.getResource();

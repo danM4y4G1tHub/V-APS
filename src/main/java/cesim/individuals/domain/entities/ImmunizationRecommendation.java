@@ -1,12 +1,15 @@
 package cesim.individuals.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ImmunizationRecommendation(
+        String resourceType,
         String id,
         Reference patient,
         List<Recommendation> recommendation
@@ -14,24 +17,13 @@ public record ImmunizationRecommendation(
 
   public record Recommendation(
           CodeableConcept vaccineCode,
-          ForecastStatus forecastStatus,
+          CodeableConcept forecastStatus,
           List<DateCriterion> dateCriterion,
-          String doseNumber
+          Integer doseNumber
   ) {
-    public record ForecastStatus(
-            List<Coding> coding
-    ) {
-      public record Coding(
-              String code,
-              String display
-      ) {}
-    }
-
     public record DateCriterion(
-            Code code,
+            CodeableConcept code,
             LocalDateTime value
-    ) {
-      public record Code(String text) {}
-    }
+    ) {}
   }
 }

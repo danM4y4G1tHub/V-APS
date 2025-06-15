@@ -1,6 +1,7 @@
 package cesim.individuals.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.time.LocalDate;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record Practitioner(
         String resourceType,
         String id,
@@ -22,7 +24,8 @@ public record Practitioner(
         List<Address> address,
         List<Attachment> photo,
         List<Qualification> qualification,
-        List<Communication> communication
+        List<Communication> communication,
+        Reference issuer
 ) {
   public enum Gender {
     MALE("male"),

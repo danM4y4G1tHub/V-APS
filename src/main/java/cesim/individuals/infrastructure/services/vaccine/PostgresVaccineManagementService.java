@@ -27,7 +27,6 @@ public class PostgresVaccineManagementService implements VaccineManagementServic
   private final ImmunizationRepository immunizationRepository;
   private final PatientRepository patientRepository;
   private final ImmunizationRecommendationRepository recommendationRepository;
-  private final List<ImmunizationRecommendation> vaccineRecommendations;
 
   @Override
   public VaccineReportDTO generateVaccineReport(LocalDate reportDate) {
@@ -42,13 +41,21 @@ public class PostgresVaccineManagementService implements VaccineManagementServic
 
     List<VaccineReportDTO.PatientVaccineStatus> statuses = new ArrayList<>();
     List<VaccineReportDTO.UpcomingDoseAlert> alerts = new ArrayList<>();
-    List<ImmunizationRecommendationModel> recommendationModels =
-            recommendationRepository.findAll();
+    List<ImmunizationRecommendationModel> recommendationModels;
+
+    try {
+     recommendationModels = recommendationRepository.findAll();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
 
     for (PatientModel pm : patientModels) {
       Patient patient = pm.getResource();
       String patientId = pm.getId();
       LocalDate birthDate = patient.birthDate();
+
       if (birthDate == null) continue;
 
       List<Immunization> patientImmunizations = immunizationsByPatient.getOrDefault(patientId, List.of());
@@ -60,7 +67,7 @@ public class PostgresVaccineManagementService implements VaccineManagementServic
           String vaccineId = recommendation.vaccineCode().coding().get(0).code();
           String vaccineName = recommendation.vaccineCode().coding().get(0).display();
           int appliedDoses = countAppliedDoses(patientImmunizations, vaccineId);
-          int nextDoseNumber = Integer.parseInt(recommendation.doseNumber());
+          int nextDoseNumber = recommendation.doseNumber();
           LocalDate nextDoseDate = recommendation.dateCriterion().get(0).value().toLocalDate();
 
           statuses.add(new VaccineReportDTO.PatientVaccineStatus(
@@ -94,33 +101,14 @@ public class PostgresVaccineManagementService implements VaccineManagementServic
   }
 
   public List<ImmunizationRecommendation> getVaccineRecommendations() {
+    List<ImmunizationRecommendation> vaccineRecommendations =
+            recommendationRepository.findAll().stream().
+                    map(ImmunizationRecommendationModel::getResource)
+                    .collect(Collectors.toList());
     return vaccineRecommendations;
   }
 }
 
-
-//package cesim.individuals.infrastructure.services.vaccine;
-//
-//import cesim.individuals.domain.entities.Immunization;
-//import cesim.individuals.domain.entities.Patient;
-//import cesim.individuals.domain.entities.vaccine.OfficialVaccineCalendar;
-//import cesim.individuals.domain.entities.vaccine.VaccineReportDTO;
-//import cesim.individuals.domain.entities.vaccine.VaccineScheduleDTO;
-//import cesim.individuals.domain.usecases.vacinne.depenencies.VaccineManagementService;
-//import cesim.individuals.infrastructure.repository.ImmunizationRepository;
-//import cesim.individuals.infrastructure.repository.PatientRepository;
-//import cesim.individuals.infrastructure.repository.models.ImmunizationModel;
-//import cesim.individuals.infrastructure.repository.models.PatientModel;
-//import org.springframework.stereotype.Service;
-//
-//import lombok.*;
-//
-//import java.time.LocalDate;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.stream.Collectors;
-//
 //@Service
 //@RequiredArgsConstructor
 //public class PostgresVaccineManagementService implements VaccineManagementService {

@@ -34,6 +34,12 @@ public class PostgresSearchPatientService implements SearchPatientService {
                 pageable.sortDirection().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
                 pageable.sortBy());
 
+        try{
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         var results = patientRepository.findAll(spec, PageRequest.of(
                 pageable.page(),
                 pageable.size(),

@@ -1,6 +1,7 @@
 package cesim.individuals.application.notification;
 
 import cesim.individuals.domain.entities.report.outputDTO.CarePlanNotificationDTO;
+import cesim.individuals.domain.entities.report.outputDTO.Test.CarePlanNotificationDTOTest;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -34,23 +35,47 @@ public class NotificationDispatcher {
       try {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(authToken);
-
+//        headers.setBearerAuth(authToken);
         HttpEntity<CarePlanNotificationDTO> request = new HttpEntity<>(notification, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(
-                notificationUrl, HttpMethod.POST, request, String.class
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                notificationUrl, request, String.class
         );
 
         if (!response.getStatusCode().is2xxSuccessful()) {
-          System.out.println("Notification error: " + response.getBody());
+          logger.error("Error on notification: {}", response.getBody());
         }
         return;
       } catch (Exception e) {
         retryCount++;
         Thread.sleep(5000);
-        logger.error("Error sending notification: " + e.getMessage());
+        logger.error("Error sending notification (attempt {}): {}",
+                retryCount, e.getMessage()
+        );
       }
     }
+    logger.error("Fail to send notification after {} attempts", MAX_RETRIES);
   }
+
+
+//  public void dispatchOnStartUp(CarePlanNotificationDTOTest notification) throws InterruptedException {
+//    int retryCount = 0;
+//
+//    while (retryCount < MAX_RETRIES) {
+//      try {
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        HttpEntity<CarePlanNotificationDTOTest> request = new HttpEntity<>(notification, headers);
+//
+//        restTemplate.postForEntity(notificationUrl, request, String.class);
+//        return;
+//      } catch (Exception e){
+//        retryCount++;
+//        Thread.sleep(5000);
+//        logger.error("Error sending notification (intento {}): {}" + e.getMessage());
+//      }
+//    }
+//    logger.error("Fallo al enviar notificación después de {} intentos", MAX_RETRIES);
+//  }
 }

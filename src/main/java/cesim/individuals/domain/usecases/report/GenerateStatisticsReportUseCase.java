@@ -16,7 +16,7 @@ public class GenerateStatisticsReportUseCase implements Usecase<GenerateStatisti
   }
 
   @Override
-  public CompletableFuture execute(Input request) {
+  public CompletableFuture<Output> execute(Input request) {
     return CompletableFuture.supplyAsync(() -> {
       MonthlyStatisticsReportDTO reportDTO = reportService.generateMonthlyReport(request.month);
 

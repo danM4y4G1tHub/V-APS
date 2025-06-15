@@ -39,7 +39,7 @@ public interface EncounterRepository extends JpaRepository<EncounterModel, Strin
                   "  SELECT 1 FROM jsonb_array_elements(e.resource->'participant') AS p " +
                   "  WHERE p->'individual'->>'reference' = :practitionerRef " +
                   ") " +
-                  "AND CAST(e.resource->'period'->>'start' AS TIMESTAMP) " +
+                  "AND CAST(e.resource->'actualPeriod'->>'start' AS TIMESTAMP) " +
                   "BETWEEN :startDate AND :endDate",
           nativeQuery = true)
   Page<EncounterModel> findByPractitionerAndDateRange(

@@ -23,8 +23,8 @@ CrudRepository<OrganizationModel, String>,
 
   @Query(value = "SELECT o.resource->>'name' AS policlinico, COUNT(p.id) AS medicos " +
           "FROM practitioners p " +
-          "JOIN organizations o ON o.id = split_part(p.resource->'organization'->>'reference', '/', 2) " +
-          "GROUP BY policlinico",
+          "LEFT JOIN organizations o ON o.id = split_part(p.resource->'issuer'->>'reference', '/', 2) " +
+          "GROUP BY o.resource->>'name', p.id",
           nativeQuery = true)
   Page<Object[]> countDoctorsByClinic(Pageable pageable);
 }

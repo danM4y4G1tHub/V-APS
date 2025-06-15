@@ -1,0 +1,113 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AppointmentRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cesim.individuals.infrastructure.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: AppointmentRepository (cesim.individuals.infrastructure.repository)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">AppointmentRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cesim.individuals.infrastructure.repository;
+&nbsp;
+&nbsp;import cesim.individuals.infrastructure.repository.models.AppointmentModel;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.Pageable;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.data.repository.CrudRepository;
+&nbsp;import org.springframework.data.repository.PagingAndSortingRepository;
+&nbsp;import org.springframework.data.repository.query.Param;
+&nbsp;import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+&nbsp;import org.springframework.data.rest.core.annotation.RestResource;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;
+&nbsp;@Tag(
+&nbsp;        name = &quot;Appointments&quot;,
+&nbsp;        description = &quot;The appointments related service&quot;
+&nbsp;)
+&nbsp;@RepositoryRestResource(path = &quot;Appointments&quot;)
+&nbsp;public interface AppointmentRepository extends JpaRepository&lt;AppointmentModel, String&gt;,
+&nbsp;        JpaSpecificationExecutor&lt;AppointmentModel&gt;,
+&nbsp;        CrudRepository&lt;AppointmentModel, String&gt;,
+&nbsp;        PagingAndSortingRepository&lt;AppointmentModel, String&gt; {
+&nbsp;  @RestResource()
+&nbsp;  @Query(value = &quot;SELECT a.id, &quot; +
+&nbsp;          &quot;a.resource-&gt;&gt;&#39;start&#39; AS scheduled_date, &quot; +
+&nbsp;          &quot;p.id, &quot; +
+&nbsp;          &quot;p.resource-&gt;&#39;name&#39;-&gt;0-&gt;&gt;&#39;family&#39;, &quot; +
+&nbsp;          &quot;p.resource-&gt;&#39;name&#39;-&gt;0-&gt;&gt;&#39;given&#39; &quot; +
+&nbsp;          &quot;FROM appointments a &quot; +
+&nbsp;          &quot;LEFT JOIN encounters e ON e.resource-&gt;&#39;appointment&#39;-&gt;&gt;&#39;reference&#39; = &#39;Appointment/&#39; || a.id &quot; +
+&nbsp;          &quot;JOIN patients p ON p.id = split_part(a.resource-&gt;&#39;participant&#39;-&gt;0-&gt;&#39;actor&#39;-&gt;&gt;&#39;reference&#39;, &#39;/&#39;, 2) &quot; +
+&nbsp;          &quot;WHERE e.id IS NULL &quot; +
+&nbsp;          &quot;AND a.resource-&gt;&gt;&#39;status&#39; = &#39;booked&#39; &quot; +
+&nbsp;          &quot;AND to_date(a.resource-&gt;&gt;&#39;start&#39;, &#39;YYYY-MM-DD&#39;) BETWEEN :startDate AND :endDate&quot;,
+&nbsp;          nativeQuery = true)
+&nbsp;  Page&lt;Object[]&gt; findAbsencesByDateRange(
+&nbsp;          Pageable pageable,
+&nbsp;          @Param(&quot;startDate&quot;) LocalDate startDate,
+&nbsp;          @Param(&quot;endDate&quot;) LocalDate endDate
+&nbsp;  );
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-15 01:28</div>
+</div>
+</body>
+</html>

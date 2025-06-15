@@ -1,0 +1,248 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PostgresCommunityReportService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cesim.individuals.infrastructure.services.report</a>
+</div>
+
+<h1>Coverage Summary for Class: PostgresCommunityReportService (cesim.individuals.infrastructure.services.report)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PostgresCommunityReportService</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/58)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cesim.individuals.infrastructure.services.report;
+&nbsp;
+&nbsp;import cesim.individuals.domain.entities.Patient;
+&nbsp;import cesim.individuals.domain.entities.report.outputDTO.CDRReportDTO;
+&nbsp;import cesim.individuals.domain.entities.report.outputDTO.CommunityReportDTO;
+&nbsp;import cesim.individuals.domain.usecases.report.dependencies.CommunityReportService;
+&nbsp;import cesim.individuals.infrastructure.repository.ConditionRepository;
+&nbsp;import cesim.individuals.infrastructure.repository.LocationRepository;
+&nbsp;import cesim.individuals.infrastructure.repository.ObservationRepository;
+&nbsp;import cesim.individuals.infrastructure.repository.PatientRepository;
+&nbsp;import cesim.individuals.infrastructure.repository.models.ConditionModel;
+&nbsp;import cesim.individuals.infrastructure.repository.models.LocationModel;
+&nbsp;import cesim.individuals.infrastructure.repository.models.ObservationModel;
+&nbsp;import cesim.individuals.infrastructure.repository.models.PatientModel;
+&nbsp;import lombok.*;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.Period;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;@Service
+<b class="nc">&nbsp;@RequiredArgsConstructor</b>
+&nbsp;public class PostgresCommunityReportService implements CommunityReportService {
+&nbsp;  private final PatientRepository patientRepository;
+&nbsp;  private final ConditionRepository conditionRepository;
+&nbsp;  private final LocationRepository locationRepository;
+&nbsp;  private final ObservationRepository observationRepository;
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public CommunityReportDTO generateCommunityReport(String communityId) {
+<b class="nc">&nbsp;    LocationModel locationModel = locationRepository.findById(communityId)</b>
+<b class="nc">&nbsp;            .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Community not found&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;    List&lt;PatientModel&gt; patients = patientRepository.findByLocation(communityId);</b>
+&nbsp;
+<b class="nc">&nbsp;    return new CommunityReportDTO(</b>
+<b class="nc">&nbsp;            locationModel.getResource().name(),</b>
+<b class="nc">&nbsp;            patients.size(),</b>
+<b class="nc">&nbsp;            calculateSickCount(patients),</b>
+<b class="nc">&nbsp;            calculateCleanlinessScore(communityId),</b>
+<b class="nc">&nbsp;            calculateDideaseIncidence(patients),</b>
+<b class="nc">&nbsp;            calculateDemographicData(patients)</b>
+&nbsp;    );
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public List&lt;CDRReportDTO&gt; generateCDRReports(String communityId) {
+<b class="nc">&nbsp;    List&lt;LocationModel&gt; cdrs = locationRepository.findCDRByCommunity(communityId);</b>
+&nbsp;
+<b class="nc">&nbsp;    return cdrs.stream().map(cdr -&gt; {</b>
+<b class="nc">&nbsp;      List&lt;PatientModel&gt; cdrPatiens = patientRepository.findByLocation(cdr.getId());</b>
+&nbsp;
+<b class="nc">&nbsp;      return new CDRReportDTO(</b>
+<b class="nc">&nbsp;              cdr.getResource().identifier().get(0).value(),</b>
+<b class="nc">&nbsp;              cdrPatiens.size(),</b>
+<b class="nc">&nbsp;              calculateSickCount(cdrPatiens),</b>
+<b class="nc">&nbsp;              calculateCleanlinessScore(cdr.getId()),</b>
+<b class="nc">&nbsp;              calculateDideaseIncidence(cdrPatiens),</b>
+<b class="nc">&nbsp;              determineMainHealthConcern(cdrPatiens)</b>
+&nbsp;      );
+<b class="nc">&nbsp;    }).collect(Collectors.toList());</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  private int calculateSickCount(List&lt;PatientModel&gt; patients){
+<b class="nc">&nbsp;    List&lt;String&gt; patientIds = patients.stream()</b>
+<b class="nc">&nbsp;            .map(PatientModel::getId)</b>
+<b class="nc">&nbsp;            .collect(Collectors.toList());</b>
+&nbsp;
+<b class="nc">&nbsp;    return conditionRepository.countActiveConditionsByPatients(patientIds);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  private int calculateCleanlinessScore(String locationId){
+<b class="nc">&nbsp;    String code = &quot;cleanliness-score&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;    List&lt;ObservationModel&gt; observations = observationRepository.findByLocationAndCode(</b>
+&nbsp;            locationId, code);
+&nbsp;
+<b class="nc">&nbsp;    return (int) observations.stream().</b>
+<b class="nc">&nbsp;            mapToInt(obs -&gt; obs.getResource().valueQuantity().value().intValue())</b>
+<b class="nc">&nbsp;            .average()</b>
+<b class="nc">&nbsp;            .orElse(5);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  private Map&lt;String, Integer&gt; calculateDideaseIncidence(List&lt;PatientModel&gt; patients){
+<b class="nc">&nbsp;    List&lt;String&gt; patientsIds = patients.stream()</b>
+<b class="nc">&nbsp;            .map(PatientModel::getId)</b>
+<b class="nc">&nbsp;            .collect(Collectors.toList());</b>
+&nbsp;
+<b class="nc">&nbsp;    List&lt;ConditionModel&gt; conditions = conditionRepository.findByPatientIds(patientsIds);</b>
+&nbsp;
+<b class="nc">&nbsp;    return conditions.stream()</b>
+<b class="nc">&nbsp;            .collect(Collectors.groupingBy(</b>
+<b class="nc">&nbsp;                    cond -&gt; cond.getResource().code().coding().get(0).display(),</b>
+<b class="nc">&nbsp;                    Collectors.summingInt(c -&gt; 1)</b>
+&nbsp;            ));
+&nbsp;  }
+&nbsp;
+&nbsp;  private CommunityReportDTO.DemographicData calculateDemographicData(List&lt;PatientModel&gt; patients){
+<b class="nc">&nbsp;    int children = 0, adults = 0, elderly = 0;</b>
+<b class="nc">&nbsp;    int male = 0, female = 0;</b>
+&nbsp;
+<b class="nc">&nbsp;    for (PatientModel patient: patients){</b>
+<b class="nc">&nbsp;      Patient p = patient.getResource();</b>
+<b class="nc">&nbsp;      LocalDate birthDate = p.birthDate();</b>
+&nbsp;
+<b class="nc">&nbsp;      if(birthDate != null){</b>
+<b class="nc">&nbsp;        int age = Period.between(birthDate, LocalDate.now()).getYears();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (age &lt; 18) children++;</b>
+<b class="nc">&nbsp;        else if (age &lt; 65) adults++;</b>
+<b class="nc">&nbsp;        else elderly++;</b>
+&nbsp;      }
+&nbsp;
+<b class="nc">&nbsp;      if (&quot;male&quot;.equalsIgnoreCase(p.gender().name())) male++;</b>
+<b class="nc">&nbsp;      else if(&quot;female&quot;.equalsIgnoreCase(p.gender().name())) female++;</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    return new CommunityReportDTO.DemographicData(children, adults, elderly,male, female);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  private String determineMainHealthConcern(List&lt;PatientModel&gt; patients){
+<b class="nc">&nbsp;    Map&lt;String, Integer&gt; incidence = calculateDideaseIncidence(patients);</b>
+&nbsp;
+<b class="nc">&nbsp;    return incidence.entrySet().stream()</b>
+<b class="nc">&nbsp;            .max(Map.Entry.comparingByKey())</b>
+<b class="nc">&nbsp;            .map(Map.Entry::getKey)</b>
+<b class="nc">&nbsp;            .orElse(&quot;No data&quot;);</b>
+&nbsp;  }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-15 01:28</div>
+</div>
+</body>
+</html>

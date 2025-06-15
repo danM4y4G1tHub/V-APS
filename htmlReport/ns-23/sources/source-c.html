@@ -1,0 +1,98 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > OrganizationRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cesim.individuals.infrastructure.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: OrganizationRepository (cesim.individuals.infrastructure.repository)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">OrganizationRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cesim.individuals.infrastructure.repository;
+&nbsp;
+&nbsp;import cesim.individuals.infrastructure.repository.models.OrganizationModel;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.Pageable;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.data.repository.CrudRepository;
+&nbsp;import org.springframework.data.repository.PagingAndSortingRepository;
+&nbsp;import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+&nbsp;
+&nbsp;@Tag(
+&nbsp;        name = &quot;Organizations&quot;,
+&nbsp;        description = &quot;The organizations related service&quot;
+&nbsp;)
+&nbsp;@RepositoryRestResource(path = &quot;Organizations&quot;)
+&nbsp;public interface OrganizationRepository extends JpaRepository&lt;OrganizationModel, String&gt;,
+&nbsp;JpaSpecificationExecutor&lt;OrganizationModel&gt;,
+&nbsp;CrudRepository&lt;OrganizationModel, String&gt;,
+&nbsp;        PagingAndSortingRepository&lt;OrganizationModel, String&gt; {
+&nbsp;
+&nbsp;  @Query(value = &quot;SELECT o.resource-&gt;&gt;&#39;name&#39; AS policlinico, COUNT(p.id) AS medicos &quot; +
+&nbsp;          &quot;FROM practitioners p &quot; +
+&nbsp;          &quot;LEFT JOIN organizations o ON o.id = split_part(p.resource-&gt;&#39;issuer&#39;-&gt;&gt;&#39;reference&#39;, &#39;/&#39;, 2) &quot; +
+&nbsp;          &quot;GROUP BY o.resource-&gt;&gt;&#39;name&#39;, p.id&quot;,
+&nbsp;          nativeQuery = true)
+&nbsp;  Page&lt;Object[]&gt; countDoctorsByClinic(Pageable pageable);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-15 01:28</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,560 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PostgresClinicalReportFilterService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cesim.individuals.infrastructure.services.report</a>
+</div>
+
+<h1>Coverage Summary for Class: PostgresClinicalReportFilterService (cesim.individuals.infrastructure.services.report)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PostgresClinicalReportFilterService</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/96)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cesim.individuals.infrastructure.services.report;
+&nbsp;
+&nbsp;import cesim.individuals.domain.utils.Page;
+&nbsp;import org.springframework.data.domain.Sort;
+&nbsp;import org.springframework.data.domain.PageRequest;
+&nbsp;import org.springframework.data.jpa.domain.Specification;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import jakarta.persistence.criteria.Expression;
+&nbsp;import jakarta.persistence.criteria.Predicate;
+&nbsp;
+&nbsp;import cesim.individuals.domain.entities.report.outputDTO.ClinicalReportDTO;
+&nbsp;import cesim.individuals.domain.entities.report.specInput.ClinicalReportFilterSpec;
+&nbsp;import cesim.individuals.domain.usecases.report.dependencies.ClinicalReportFilterService;
+&nbsp;import cesim.individuals.infrastructure.repository.ConditionRepository;
+&nbsp;import cesim.individuals.infrastructure.repository.PatientRepository;
+&nbsp;import cesim.individuals.infrastructure.repository.models.ConditionModel;
+&nbsp;
+&nbsp;import cesim.individuals.infrastructure.repository.models.PatientModel;
+&nbsp;
+&nbsp;import cesim.individuals.domain.utils.Pageable;
+&nbsp;
+&nbsp;import lombok.*;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;@Service
+<b class="nc">&nbsp;@RequiredArgsConstructor</b>
+&nbsp;public class PostgresClinicalReportFilterService implements ClinicalReportFilterService {
+&nbsp;  private final PatientRepository patientRepository;
+&nbsp;  private final ConditionRepository conditionRepository;
+&nbsp;
+&nbsp;  public ClinicalReportDTO filterConditions(Pageable pageable, ClinicalReportFilterSpec filterSpec){
+<b class="nc">&nbsp;    Specification&lt;PatientModel&gt; patientSpec = createPatientSpecification(filterSpec);</b>
+<b class="nc">&nbsp;    var patientSort = Sort.by(</b>
+<b class="nc">&nbsp;              pageable.sortDirection().equals(&quot;asc&quot;) ? Sort.Direction.ASC : Sort.Direction.DESC,</b>
+<b class="nc">&nbsp;              pageable.sortBy());</b>
+&nbsp;
+<b class="nc">&nbsp;    var patientResults = patientRepository.findAll(</b>
+<b class="nc">&nbsp;            patientSpec, PageRequest.of(pageable.page(), pageable.size(), patientSort));</b>
+&nbsp;
+<b class="nc">&nbsp;    List&lt;String&gt; patientsId = patientResults.getContent().stream()</b>
+<b class="nc">&nbsp;            .map(p -&gt; p.getResource().id())</b>
+<b class="nc">&nbsp;            .collect(Collectors.toList());</b>
+&nbsp;
+<b class="nc">&nbsp;    Specification&lt;ConditionModel&gt; conditionsSpec = createConditionSpecification(filterSpec, patientsId);</b>
+<b class="nc">&nbsp;    var conditionResults = conditionRepository.findAll(conditionsSpec, PageRequest.of(pageable.page(),</b>
+<b class="nc">&nbsp;              pageable.size(),</b>
+&nbsp;              patientSort));
+&nbsp;
+<b class="nc">&nbsp;    List&lt;ClinicalReportDTO.PatientInfo&gt; patientContent = patientResults.getContent().stream()</b>
+<b class="nc">&nbsp;            .map(p -&gt; new ClinicalReportDTO.PatientInfo(</b>
+<b class="nc">&nbsp;                    p.getResource().identifier(),</b>
+<b class="nc">&nbsp;                    p.getResource().name(),</b>
+<b class="nc">&nbsp;                    p.getResource().gender(),</b>
+<b class="nc">&nbsp;                    p.getResource().birthDate(),</b>
+<b class="nc">&nbsp;                    p.getResource().telecom(),</b>
+<b class="nc">&nbsp;                    p.getResource().address(),</b>
+<b class="nc">&nbsp;                    p.getResource().maritalStatus()</b>
+&nbsp;            ))
+<b class="nc">&nbsp;            .collect(Collectors.toList());</b>
+&nbsp;
+<b class="nc">&nbsp;    List&lt;ClinicalReportDTO.ConditionsInfo&gt; content = conditionResults.getContent().stream()</b>
+<b class="nc">&nbsp;            .map(c -&gt; new ClinicalReportDTO.ConditionsInfo(</b>
+<b class="nc">&nbsp;                    c.getResource().clinicalStatus(),</b>
+<b class="nc">&nbsp;                    c.getResource().code(),</b>
+<b class="nc">&nbsp;                    c.getResource().recordedDate(),</b>
+<b class="nc">&nbsp;                    c.getResource().onsetDateTime(),</b>
+<b class="nc">&nbsp;                    c.getResource().subject()</b>
+&nbsp;            ))
+<b class="nc">&nbsp;            .collect(Collectors.toList());</b>
+&nbsp;
+<b class="nc">&nbsp;    return new ClinicalReportDTO(</b>
+&nbsp;            new Page&lt;&gt;(
+<b class="nc">&nbsp;                    patientResults.getNumber(),</b>
+<b class="nc">&nbsp;                    patientResults.getSize(),</b>
+<b class="nc">&nbsp;                    patientResults.getTotalPages(),</b>
+&nbsp;                    patientContent
+&nbsp;            ),
+&nbsp;            new Page&lt;&gt;(
+<b class="nc">&nbsp;                    conditionResults.getNumber(),</b>
+<b class="nc">&nbsp;                    conditionResults.getSize(),</b>
+<b class="nc">&nbsp;                    conditionResults.getTotalPages(),</b>
+&nbsp;                    content
+&nbsp;            )
+&nbsp;    );
+&nbsp;  }
+&nbsp;
+&nbsp;  private Specification&lt;PatientModel&gt; createPatientSpecification(ClinicalReportFilterSpec filterSpec){
+<b class="nc">&nbsp;    return (root, query, criteriaBuilder) -&gt; {</b>
+<b class="nc">&nbsp;      List&lt;Predicate&gt; predicates = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;      if(filterSpec.patientIdentifier() != null){</b>
+<b class="nc">&nbsp;        predicates.add(criteriaBuilder.equal(</b>
+<b class="nc">&nbsp;                criteriaBuilder.function(</b>
+&nbsp;                        &quot;jsonb_extract_path_text&quot;,
+&nbsp;                        String.class,
+<b class="nc">&nbsp;                        root.get(&quot;resource&quot;),</b>
+<b class="nc">&nbsp;                        criteriaBuilder.literal(&quot;identifier&quot;),</b>
+<b class="nc">&nbsp;                        criteriaBuilder.literal(&quot;0&quot;),</b>
+<b class="nc">&nbsp;                        criteriaBuilder.literal(&quot;value&quot;)),</b>
+<b class="nc">&nbsp;                filterSpec.patientIdentifier()</b>
+&nbsp;        ));
+&nbsp;      }
+&nbsp;
+<b class="nc">&nbsp;      if (filterSpec.patientName() != null) {</b>
+<b class="nc">&nbsp;        String searchPattern = &quot;%&quot; + filterSpec.patientName().toLowerCase() + &quot;%&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;        Expression&lt;String&gt; familyName = criteriaBuilder.function(</b>
+&nbsp;                &quot;jsonb_extract_path_text&quot;, String.class,
+<b class="nc">&nbsp;                root.get(&quot;resource&quot;),</b>
+<b class="nc">&nbsp;                criteriaBuilder.literal(&quot;name&quot;),</b>
+<b class="nc">&nbsp;                criteriaBuilder.literal(&quot;0&quot;),</b>
+<b class="nc">&nbsp;                criteriaBuilder.literal(&quot;family&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;        Expression&lt;String&gt; givenName = criteriaBuilder.function(</b>
+&nbsp;                &quot;jsonb_extract_path_text&quot;,
+&nbsp;                String.class,
+<b class="nc">&nbsp;                root.get(&quot;resource&quot;),</b>
+<b class="nc">&nbsp;                criteriaBuilder.literal(&quot;name&quot;),</b>
+<b class="nc">&nbsp;                criteriaBuilder.literal(&quot;0&quot;),</b>
+<b class="nc">&nbsp;                criteriaBuilder.literal(&quot;given&quot;)</b>
+&nbsp;        );
+&nbsp;
+<b class="nc">&nbsp;        predicates.add(criteriaBuilder.or(</b>
+<b class="nc">&nbsp;                criteriaBuilder.like(criteriaBuilder.lower(familyName), searchPattern),</b>
+<b class="nc">&nbsp;                criteriaBuilder.like(criteriaBuilder.lower(givenName), searchPattern)</b>
+&nbsp;        ));
+&nbsp;      }
+&nbsp;
+<b class="nc">&nbsp;      if (filterSpec.patientGender() != null) {</b>
+<b class="nc">&nbsp;        predicates.add(criteriaBuilder.equal(</b>
+<b class="nc">&nbsp;                criteriaBuilder.function(</b>
+&nbsp;                        &quot;jsonb_extract_path_text&quot;,
+&nbsp;                        String.class,
+<b class="nc">&nbsp;                        root.get(&quot;resource&quot;),</b>
+<b class="nc">&nbsp;                        criteriaBuilder.literal(&quot;gender&quot;)</b>
+&nbsp;                ),
+<b class="nc">&nbsp;                filterSpec.patientGender()</b>
+&nbsp;        ));
+&nbsp;      }
+&nbsp;
+<b class="nc">&nbsp;      return criteriaBuilder.and(predicates.toArray(new Predicate[0]));</b>
+&nbsp;    };
+&nbsp;    }
+&nbsp;
+&nbsp;  private Specification&lt;ConditionModel&gt; createConditionSpecification(
+&nbsp;      ClinicalReportFilterSpec filterSpec,
+&nbsp;      List&lt;String&gt; patientIds
+&nbsp;  ) {
+<b class="nc">&nbsp;    return (root, query, criteriaBuilder) -&gt; {</b>
+<b class="nc">&nbsp;      List&lt;Predicate&gt; predicates = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;      if (!patientIds.isEmpty()) {</b>
+<b class="nc">&nbsp;        Expression&lt;String&gt; subjectRef = criteriaBuilder.function(</b>
+&nbsp;                &quot;jsonb_extract_path_text&quot;,
+&nbsp;                String.class,
+<b class="nc">&nbsp;                root.get(&quot;resource&quot;),</b>
+<b class="nc">&nbsp;                criteriaBuilder.literal(&quot;subject&quot;),</b>
+<b class="nc">&nbsp;                criteriaBuilder.literal(&quot;reference&quot;)</b>
+&nbsp;        );
+&nbsp;
+<b class="nc">&nbsp;        predicates.add(criteriaBuilder.or(patientIds.stream()</b>
+<b class="nc">&nbsp;                .map(id -&gt; criteriaBuilder.like(subjectRef, &quot;%Patient/&quot; + id + &quot;%&quot;))</b>
+<b class="nc">&nbsp;                .toArray(Predicate[]::new)</b>
+&nbsp;        ));
+&nbsp;      }
+&nbsp;
+<b class="nc">&nbsp;      if (filterSpec.pathologyCode() != null) {</b>
+<b class="nc">&nbsp;        String jsonPath = &quot;$.code.coding[*] ? (@.code == \&quot;&quot; + filterSpec.pathologyCode() + &quot;\&quot;)&quot;;</b>
+<b class="nc">&nbsp;        predicates.add(criteriaBuilder.isTrue(</b>
+<b class="nc">&nbsp;                criteriaBuilder.function(&quot;jsonb_path_exists&quot;, Boolean.class,</b>
+<b class="nc">&nbsp;                        root.get(&quot;resource&quot;), criteriaBuilder.literal(jsonPath))</b>
+&nbsp;        ));
+&nbsp;      }
+&nbsp;
+<b class="nc">&nbsp;      if (filterSpec.startDate() != null || filterSpec.endDate() != null) {</b>
+<b class="nc">&nbsp;        Expression&lt;LocalDate&gt; recordedDate = criteriaBuilder.function(&quot;to_date&quot;, LocalDate.class,</b>
+<b class="nc">&nbsp;                criteriaBuilder.function(&quot;jsonb_extract_path_text&quot;, String.class,</b>
+<b class="nc">&nbsp;                        root.get(&quot;resource&quot;), criteriaBuilder.literal(&quot;recordedDate&quot;)),</b>
+<b class="nc">&nbsp;                criteriaBuilder.literal(&quot;YYYY-MM-DD&quot;)</b>
+&nbsp;        );
+&nbsp;
+<b class="nc">&nbsp;        if (filterSpec.startDate() != null &amp;&amp; filterSpec.endDate() != null) {</b>
+<b class="nc">&nbsp;          predicates.add(criteriaBuilder.between(recordedDate, filterSpec.startDate(), filterSpec.endDate()));</b>
+<b class="nc">&nbsp;        } else if (filterSpec.startDate() != null) {</b>
+<b class="nc">&nbsp;          predicates.add(criteriaBuilder.greaterThanOrEqualTo(recordedDate, filterSpec.startDate()));</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;          predicates.add(criteriaBuilder.lessThanOrEqualTo(recordedDate, filterSpec.endDate()));</b>
+&nbsp;        }
+&nbsp;      }
+&nbsp;
+<b class="nc">&nbsp;      return criteriaBuilder.and(predicates.toArray(new Predicate[0]));</b>
+&nbsp;    };
+&nbsp;  }
+&nbsp;}
+&nbsp;
+&nbsp;
+&nbsp;//  public ClinicalReportDTO filterConditions(Pageable pageable, ClinicalReportFilterSpec filterSpec) {
+&nbsp;//    Specification&lt;ConditionModel&gt; pathologySpec = createPathologySpecification(filterSpec);
+&nbsp;//
+&nbsp;//    PatientModel patientModel = null;
+&nbsp;//    Page&lt;Patient&gt; patientPage = null;
+&nbsp;//
+&nbsp;//    if (filterSpec.patientIdentifier() != null &amp;&amp; filterSpec.patientName() == null &amp;&amp; filterSpec.patientGender() == null) {
+&nbsp;//      patientModel = patientRepository.findByIdentification(filterSpec.patientIdentifier())
+&nbsp;//              .orElseThrow(() -&gt;
+&nbsp;//                      new IllegalArgumentException(&quot;Patient not found with CI: &quot;
+&nbsp;//                              + filterSpec.patientIdentifier())
+&nbsp;//              );
+&nbsp;//    } else {
+&nbsp;//      var sort = Sort.by(
+&nbsp;//              pageable.sortDirection().equals(&quot;asc&quot;) ? Sort.Direction.ASC : Sort.Direction.DESC,
+&nbsp;//              pageable.sortBy());
+&nbsp;//
+&nbsp;//      Specification&lt;PatientModel&gt; patientSpec = createPatientSpecifications(filterSpec);
+&nbsp;//      var patientResults = patientRepository.findAll(patientSpec, PageRequest.of(
+&nbsp;//              pageable.page(),
+&nbsp;//              pageable.size(),
+&nbsp;//              sort));
+&nbsp;//
+&nbsp;//      patientPage = new Page&lt;&gt;(
+&nbsp;//              patientResults.getNumber(),
+&nbsp;//              patientResults.getSize(),
+&nbsp;//              patientResults.getTotalPages(),
+&nbsp;//              patientResults.toList().stream().map(PatientModel::getResource).toList()
+&nbsp;//      );
+&nbsp;//    }
+&nbsp;//
+&nbsp;//    var sort = Sort.by(
+&nbsp;//            pageable.sortDirection().equals(&quot;asc&quot;) ? Sort.Direction.ASC : Sort.Direction.DESC,
+&nbsp;//            pageable.sortBy());
+&nbsp;//
+&nbsp;//    var pathologyResults = conditionRepository.findAll(pathologySpec, PageRequest.of(
+&nbsp;//            pageable.page(),
+&nbsp;//            pageable.size(),
+&nbsp;//            sort));
+&nbsp;//
+&nbsp;//    Page&lt;Condition&gt; conditions = new Page&lt;&gt;(
+&nbsp;//            pathologyResults.getNumber(),
+&nbsp;//            pathologyResults.getSize(),
+&nbsp;//            pathologyResults.getTotalPages(),
+&nbsp;//            pathologyResults.toList().stream().map(ConditionModel::getResource).toList()
+&nbsp;//    );
+&nbsp;//
+&nbsp;//    return new ClinicalReportDTO(
+&nbsp;//            createClinicalPatientReport(patientModel),
+&nbsp;//            createClinicalPatientReport(patientPage),
+&nbsp;//            createClinicalConditionsReport(conditions)
+&nbsp;//    );
+&nbsp;//  }
+&nbsp;//
+&nbsp;//  private Specification&lt;PatientModel&gt; createPatientSpecifications(ClinicalReportFilterSpec filterSpec) {
+&nbsp;//    Specification&lt;PatientModel&gt; spec = ((root, query, criteriaBuilder) -&gt; {
+&nbsp;//      predicates = new ArrayList&lt;&gt;();
+&nbsp;//
+&nbsp;//      addPatientNameToPredicate(filterSpec.patientName(), root, criteriaBuilder);
+&nbsp;//      addPatientGenderToPredicate(filterSpec.patientGender(), root, criteriaBuilder);
+&nbsp;//
+&nbsp;//      if (predicates.isEmpty()) return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
+&nbsp;//
+&nbsp;//      return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+&nbsp;//    });
+&nbsp;//
+&nbsp;//    return spec;
+&nbsp;//  }
+&nbsp;//
+&nbsp;//  private void addPatientNameToPredicate(String patientName, Root&lt;PatientModel&gt; root, CriteriaBuilder criteriaBuilder) {
+&nbsp;//    if (patientName == null || patientName.isEmpty()) return;
+&nbsp;//
+&nbsp;//    if (patientName != null &amp;&amp; !patientName.isEmpty()) {
+&nbsp;//      String lowerCasePatientName = patientName.toLowerCase();
+&nbsp;//      String searchPattern = &quot;%&quot; + lowerCasePatientName + &quot;%&quot;;
+&nbsp;//
+&nbsp;//      Expression&lt;String&gt; familyNameExpression = criteriaBuilder.function(
+&nbsp;//              &quot;jsonb_extract_path_text&quot;,
+&nbsp;//              String.class,
+&nbsp;//              root.get(&quot;resource&quot;),
+&nbsp;//              criteriaBuilder.literal(&quot;name&quot;),
+&nbsp;//              criteriaBuilder.literal(&quot;0&quot;),
+&nbsp;//              criteriaBuilder.literal(&quot;family&quot;)
+&nbsp;//      );
+&nbsp;//      Predicate familyPredicate = criteriaBuilder.like(criteriaBuilder.lower(familyNameExpression), searchPattern);
+&nbsp;//
+&nbsp;//      Expression&lt;String&gt; givenNameAsTextExpression = criteriaBuilder.function(
+&nbsp;//              &quot;jsonb_extract_path_text&quot;,
+&nbsp;//              String.class,
+&nbsp;//              root.get(&quot;resource&quot;),
+&nbsp;//              criteriaBuilder.literal(&quot;name&quot;),
+&nbsp;//              criteriaBuilder.literal(&quot;0&quot;),
+&nbsp;//              criteriaBuilder.literal(&quot;given&quot;)
+&nbsp;//      );
+&nbsp;//      Predicate givenPredicate = criteriaBuilder.like(criteriaBuilder.lower(givenNameAsTextExpression), searchPattern);
+&nbsp;//
+&nbsp;//      predicates.add(criteriaBuilder.or(familyPredicate, givenPredicate));
+&nbsp;//    }
+&nbsp;//  }
+&nbsp;//
+&nbsp;//  private void addPatientGenderToPredicate(String patientGender, Root&lt;PatientModel&gt; root, CriteriaBuilder criteriaBuilder) {
+&nbsp;//    if (patientGender == null || patientGender.isEmpty()) return;
+&nbsp;//
+&nbsp;//    if (patientGender != null &amp;&amp; !patientGender.isEmpty()) {
+&nbsp;//      Expression&lt;String&gt; genderExpression = criteriaBuilder.function(
+&nbsp;//              &quot;jsonb_extract_path_text&quot;,
+&nbsp;//              String.class,
+&nbsp;//              root.get(&quot;resource&quot;),
+&nbsp;//              criteriaBuilder.literal(&quot;gender&quot;)
+&nbsp;//      );
+&nbsp;//      predicates.add(criteriaBuilder.equal(genderExpression, patientGender));
+&nbsp;//    }
+&nbsp;//  }
+&nbsp;//
+&nbsp;//  private Specification&lt;ConditionModel&gt; createPathologySpecification(ClinicalReportFilterSpec filterSpec) {
+&nbsp;//    Specification&lt;ConditionModel&gt; spec = (
+&nbsp;//            (root, query, criteriaBuilder) -&gt; {
+&nbsp;//              predicates = new ArrayList&lt;&gt;();
+&nbsp;//
+&nbsp;//              addPathologyToPredicate(filterSpec.pathologyCode(), root, criteriaBuilder);
+&nbsp;//              addRangeDateToPredicate(filterSpec.startDate(), filterSpec.endDate(), root, criteriaBuilder);
+&nbsp;//
+&nbsp;//              if (predicates.isEmpty()) return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
+&nbsp;//
+&nbsp;//              return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+&nbsp;//            }
+&nbsp;//    );
+&nbsp;//
+&nbsp;//    return spec;
+&nbsp;//  }
+&nbsp;//
+&nbsp;//  private void addPathologyToPredicate(String pathology, Root&lt;ConditionModel&gt; root, CriteriaBuilder criteriaBuilder) {
+&nbsp;//    if (pathology == null || pathology.isEmpty()) return;
+&nbsp;//
+&nbsp;//    if (pathology != null &amp;&amp; !pathology.isEmpty()) {
+&nbsp;//      String jsonPathExpression = &quot;$.code.coding[*] ? (@.code == \&quot;&quot; + pathology + &quot;\&quot;)&quot;;
+&nbsp;//
+&nbsp;//      Expression&lt;Boolean&gt; jsonPathExists = criteriaBuilder.function(
+&nbsp;//              &quot;jsonb_path_exists&quot;,
+&nbsp;//              Boolean.class,
+&nbsp;//              root.get(&quot;resource&quot;),
+&nbsp;//              criteriaBuilder.literal(jsonPathExpression)
+&nbsp;//      );
+&nbsp;//
+&nbsp;//      predicates.add(criteriaBuilder.isTrue(jsonPathExists));
+&nbsp;//    }
+&nbsp;//  }
+&nbsp;//
+&nbsp;//  private void addRangeDateToPredicate(LocalDate startDate, LocalDate endDate, Root&lt;ConditionModel&gt; root, CriteriaBuilder criteriaBuilder) {
+&nbsp;//    Expression&lt;LocalDate&gt; startedDate = extractStartedDate(root, criteriaBuilder);
+&nbsp;//    if (startDate == null &amp;&amp; endDate == null) {
+&nbsp;//      return;
+&nbsp;//    }
+&nbsp;//
+&nbsp;//    if (startDate != null &amp;&amp; endDate == null) {
+&nbsp;//      predicates.add(criteriaBuilder.greaterThanOrEqualTo(startedDate, startDate));
+&nbsp;//    } else if (startDate != null &amp;&amp; endDate != null) {
+&nbsp;//      predicates.add(criteriaBuilder.between(startedDate, startDate, endDate));
+&nbsp;//    } else {
+&nbsp;//      predicates.add(criteriaBuilder.lessThanOrEqualTo(startedDate, endDate));
+&nbsp;//    }
+&nbsp;//  }
+&nbsp;//
+&nbsp;//  private Expression&lt;LocalDate&gt; extractStartedDate(Root&lt;ConditionModel&gt; root, CriteriaBuilder criteriaBuilder) {
+&nbsp;//    return criteriaBuilder.function(
+&nbsp;//            &quot;to_Date&quot;,
+&nbsp;//            LocalDate.class,
+&nbsp;//            extractStartedDateStr(root, criteriaBuilder),
+&nbsp;//            criteriaBuilder.literal(&quot;YYYY-MM-DD&quot;)
+&nbsp;//    );
+&nbsp;//  }
+&nbsp;//
+&nbsp;//  private Expression&lt;String&gt; extractStartedDateStr(Root&lt;ConditionModel&gt; root, CriteriaBuilder criteriaBuilder) {
+&nbsp;//    return criteriaBuilder.function(
+&nbsp;//            &quot;jsonb_extract_path_text&quot;,
+&nbsp;//            String.class,
+&nbsp;//            root.get(&quot;resource&quot;),
+&nbsp;//            criteriaBuilder.literal(&quot;recordedDate&quot;)
+&nbsp;//    );
+&nbsp;//  }
+&nbsp;//
+&nbsp;//  private ClinicalReportDTO.PatientInfo createClinicalPatientReport(PatientModel patientModel) {
+&nbsp;//    if (patientModel != null) {
+&nbsp;//      ClinicalReportDTO.PatientInfo patientInfo = new ClinicalReportDTO.PatientInfo(
+&nbsp;//              patientModel.getResource().identifier(),
+&nbsp;//              patientModel.getResource().name(),
+&nbsp;//              patientModel.getResource().gender(),
+&nbsp;//              patientModel.getResource().birthDate(),
+&nbsp;//              patientModel.getResource().telecom(),
+&nbsp;//              patientModel.getResource().address(),
+&nbsp;//              patientModel.getResource().maritalStatus()
+&nbsp;//      );
+&nbsp;//      return patientInfo;
+&nbsp;//    }
+&nbsp;//    return null;
+&nbsp;//  }
+&nbsp;//
+&nbsp;//  private Page&lt;ClinicalReportDTO.PatientInfo&gt; createClinicalPatientReport(Page&lt;Patient&gt; patientPage) {
+&nbsp;//    if (patientPage == null) return null;
+&nbsp;//
+&nbsp;//    List&lt;Patient&gt; patientList = patientPage.items();
+&nbsp;//    List&lt;ClinicalReportDTO.PatientInfo&gt; patientInfoList = patientList.stream().map(
+&nbsp;//            p -&gt; new ClinicalReportDTO.PatientInfo(
+&nbsp;//                    p.identifier(),
+&nbsp;//                    p.name(),
+&nbsp;//                    p.gender(),
+&nbsp;//                    p.birthDate(),
+&nbsp;//                    p.telecom(),
+&nbsp;//                    p.address(),
+&nbsp;//                    p.maritalStatus()
+&nbsp;//            )
+&nbsp;//    ).toList();
+&nbsp;//
+&nbsp;//    return new Page&lt;&gt;(
+&nbsp;//            patientPage.pageNumber(),
+&nbsp;//            patientPage.pageSize(),
+&nbsp;//            patientPage.totalPages(),
+&nbsp;//            patientInfoList
+&nbsp;//    );
+&nbsp;//  }
+&nbsp;//
+&nbsp;//  private Page&lt;ClinicalReportDTO.ConditionsInfo&gt; createClinicalConditionsReport(Page&lt;Condition&gt; conditionsPage) {
+&nbsp;//    if (conditionsPage == null) return null;
+&nbsp;//
+&nbsp;//    List&lt;Condition&gt; conditionList = conditionsPage.items();
+&nbsp;//
+&nbsp;//    List&lt;ClinicalReportDTO.ConditionsInfo&gt; conditionsInfoList = conditionList.stream().map(
+&nbsp;//            c -&gt; new ClinicalReportDTO.ConditionsInfo(
+&nbsp;//                    c.clinicalStatus(),
+&nbsp;//                    c.code(),
+&nbsp;//                    c.recordedDate(),
+&nbsp;//                    c.onsetDateTime(),
+&nbsp;//                    c.subject()
+&nbsp;//            )
+&nbsp;//    ).collect(Collectors.toList());
+&nbsp;//
+&nbsp;//    return new Page&lt;&gt;(
+&nbsp;//            conditionsPage.pageNumber(),
+&nbsp;//            conditionsPage.pageSize(),
+&nbsp;//            conditionsPage.totalPages(),
+&nbsp;//            conditionsInfoList
+&nbsp;//    );
+&nbsp;//  }
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-15 01:28</div>
+</div>
+</body>
+</html>

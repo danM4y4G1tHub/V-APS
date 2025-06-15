@@ -26,8 +26,7 @@ public interface SpecimenRepository extends JpaRepository<SpecimenModel, String>
         PagingAndSortingRepository<SpecimenModel, String> {
   @RestResource()
   @Query(value = "SELECT * FROM specimens e " +
-          "WHERE e.resource->'collection'->>'collectedDateTime' > :afterDate " +
-          "AND e.resource->'status' LIKE 'available'"
+          "WHERE e.resource->'collection'->>'collectedDateTime' > :afterDate"
           , nativeQuery = true)
   Page<SpecimenModel> findByCollectionDateAfter(
           @Param("afterDate") LocalDateTime afterDate, Pageable pageable);

@@ -1,8 +1,8 @@
 package cesim.individuals.domain.entities;
 
-import java.util.Date;
+import java.time.Instant;
 
 public record Period(
-        Date start,
-        Date end) {
+        Instant start,
+        Instant end) {
 }

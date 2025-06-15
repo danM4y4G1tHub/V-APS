@@ -1,9 +1,9 @@
 package cesim.individuals.domain.entities.report.outputDTO;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record RecentEncounterDTO(
-        LocalDateTime date,
+        Instant date,
         String type,
         String practitionerName,
         String patientName

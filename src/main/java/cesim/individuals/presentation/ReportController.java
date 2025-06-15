@@ -19,8 +19,8 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("/api/v1/report")
 @RequiredArgsConstructor
 public class ReportController {
-  private final GenerateDerivationReportUsecase derivationReportUseCase;
   private final GetCriticalPatientDataUseCase criticalPatientDataUseCase;
+  private final GenerateDerivationReportUsecase derivationReportUseCase;
   private final ClinicalReportFilterUseCase clinicalReportFilterUseCase;
   private final AdvancedSearchUseCase advancedSearchUsecase;
   private final GetRecentEncountersUseCase recentEncountersUseCase;
@@ -31,13 +31,7 @@ public class ReportController {
   private final MedicalStaffFilterUseCase medicalStaffFilterUseCase;
   private final GenerateAbsenceTrackingReportUseCase generateAbsenceTrackingReportUseCase;
 
-  @GetMapping("/derivation/{patientId}")
-  public CompletableFuture<DerivationReportDTO> generateDerivationReport(@PathVariable String patientId) {
-    return derivationReportUseCase.execute(
-                    new GenerateDerivationReportUsecase.Input(patientId))
-            .thenApply(GenerateDerivationReportUsecase.Output::derivationReport);
-  }
-
+  //RF02
   @GetMapping("/urgency/{CI}")
   public CompletableFuture<CriticalPatientDataDTO> getCriticalPatientData(@PathVariable String CI) {
     return criticalPatientDataUseCase.execute(
@@ -45,6 +39,7 @@ public class ReportController {
             .thenApply(GetCriticalPatientDataUseCase.Output::patientData);
   }
 
+  //RF03
   @PostMapping("/filter")
   public CompletableFuture<ClinicalReportDTO> reportFilter(
           @RequestParam(defaultValue = "0") int page,
@@ -60,7 +55,16 @@ public class ReportController {
     ).thenApply(ClinicalReportFilterUseCase.Output::clinicalReportDTO);
   }
 
-    @PostMapping("/search")
+  //RF04
+  @GetMapping("/derivation/{patientId}")
+  public CompletableFuture<DerivationReportDTO> generateDerivationReport(@PathVariable String patientId) {
+    return derivationReportUseCase.execute(
+                    new GenerateDerivationReportUsecase.Input(patientId))
+            .thenApply(GenerateDerivationReportUsecase.Output::derivationReport);
+  }
+
+  //RF05
+  @PostMapping("/search")
   public CompletableFuture<AdvancedSearchResultsDTO> advancedSearch(
           @RequestParam(defaultValue = "0") int page,
           @RequestParam(defaultValue = "10") int size,
@@ -76,6 +80,7 @@ public class ReportController {
             .thenApply(AdvancedSearchUseCase.Output::resultsDTO);
   }
 
+  //RF06
   @PostMapping("/recent-encounters")
   public CompletableFuture<Page<RecentEncounterDTO>> recentEncounters(
           @RequestParam(defaultValue = "0") int page,
@@ -92,6 +97,7 @@ public class ReportController {
     ).thenApply(GetRecentEncountersUseCase.Output::encounterDTO);
   }
 
+  //RF07
   @PostMapping("/risk-priority")
   public CompletableFuture<Page<PatientRiskPriorityDTO>> riskPriorityList(
           @RequestParam(defaultValue = "0") int page,
@@ -105,16 +111,18 @@ public class ReportController {
     ).thenApply(AssessPatientsRiskUseCase.Output::riskPriorities);
   }
 
+  //RF10
   @GetMapping("/monthly-report")
   public String getMonthlyReport() {
     System.out.println("Requesting Monthly Report");
     reportScheduler.generateMonthlyReport();
-    return "";
+    return "Request received successfully";
   }
 
   // Download PDF ReportMonthly
   // Download EXCEL ReportMonthly
 
+  //RF12-Community
   @GetMapping("/community/{communityId}")
   public CompletableFuture<CommunityReportDTO> generateCommunityReport(
           @PathVariable String communityId
@@ -125,6 +133,7 @@ public class ReportController {
             .thenApply(GenerateCommunityReportUseCase.Output::reportDTO);
   }
 
+  //RF12-CDR
   @GetMapping("/cdrs/{communityId}")
   public CompletableFuture<List<CDRReportDTO>> generateCDRReports(
           @PathVariable String communityId
@@ -134,8 +143,9 @@ public class ReportController {
     ).thenApply(GenerateCDRReportsUseCase.Output::reportDTO);
   }
 
+  //RF13
   @GetMapping("/medical-staff")
-  public CompletableFuture<Page<MedicalStaffCountDTO>> generateMedicaStaffFilter(
+  public CompletableFuture<Page<MedicalStaffCountDTO>> generateMedicalStaffFilter(
           @RequestParam(defaultValue = "0") int page,
           @RequestParam(defaultValue = "10") int size,
           @RequestParam(defaultValue = "asc") String sortDirection,
@@ -148,6 +158,7 @@ public class ReportController {
     ).thenApply(MedicalStaffFilterUseCase.Output::resultsDTO);
   }
 
+  //RF14
   @PostMapping("/absence")
   public CompletableFuture<Page<AbsenceReportDTO>> absenceTrackingReport(
           @RequestParam(defaultValue = "0") int page,

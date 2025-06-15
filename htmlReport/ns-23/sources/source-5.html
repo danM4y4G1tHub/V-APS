@@ -1,0 +1,117 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ObservationRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cesim.individuals.infrastructure.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: ObservationRepository (cesim.individuals.infrastructure.repository)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">ObservationRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cesim.individuals.infrastructure.repository;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.data.repository.CrudRepository;
+&nbsp;import org.springframework.data.repository.PagingAndSortingRepository;
+&nbsp;import org.springframework.data.repository.query.Param;
+&nbsp;import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+&nbsp;import org.springframework.data.rest.core.annotation.RestResource;
+&nbsp;
+&nbsp;import cesim.individuals.infrastructure.repository.models.ObservationModel;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;
+&nbsp;@Tag(name = &quot;Observations&quot;, description = &quot;The observations related service&quot;)
+&nbsp;@RepositoryRestResource(path = &quot;Observations&quot;)
+&nbsp;public interface ObservationRepository extends CrudRepository&lt;ObservationModel, String&gt;,
+&nbsp;                PagingAndSortingRepository&lt;ObservationModel, String&gt; {
+&nbsp;        @RestResource()
+&nbsp;        @Query(value = &quot;SELECT o.* FROM observations o &quot; +
+&nbsp;                        &quot;WHERE o.resource-&gt;&#39;encounter&#39;-&gt;&gt;&#39;reference&#39; = CONCAT(&#39;Encounter/&#39;, :encounterId)&quot;
+&nbsp;                , nativeQuery = true)
+&nbsp;        List&lt;ObservationModel&gt; findByEncounterId(@Param(&quot;encounterId&quot;) String encounterId);
+&nbsp;
+&nbsp;        @RestResource()
+&nbsp;        @Query(value = &quot;SELECT * FROM observations o &quot; +
+&nbsp;                        &quot;WHERE o.resource-&gt;&#39;subject&#39;-&gt;&gt;&#39;reference&#39; &quot; +
+&nbsp;                        &quot;LIKE &#39;Patient/%&#39; AND split_part(o.resource-&gt;&#39;subject&#39;-&gt;&gt;&#39;reference&#39;,  &#39;/&#39;, 2) IN :patientIds&quot;, nativeQuery = true)
+&nbsp;        List&lt;ObservationModel&gt; findByPatientIds(@Param(&quot;patientIds&quot;) List&lt;String&gt; patientIds);
+&nbsp;
+&nbsp;        @RestResource()
+&nbsp;        @Query(value = &quot;SELECT * FROM observations o &quot; +
+&nbsp;                        &quot;WHERE o.resource-&gt;&#39;subject&#39;-&gt;&gt;&#39;reference&#39; &quot; +
+&nbsp;                        &quot;LIKE &#39;Patient/%&#39; AND split_part(o.resource-&gt;&#39;subject&#39;-&gt;&gt;&#39;reference&#39;, &#39;/&#39;, 2) IN :patientIds &quot; +
+&nbsp;                        &quot;AND o.resource-&gt;&#39;effectiveDateTime&#39;-&gt;&gt;&#39;value&#39; BETWEEN :startDate AND :endDate &quot; +
+&nbsp;                        &quot;AND o.resource-&gt;&#39;code&#39;-&gt;&#39;coding&#39; @&gt; &#39;[{\&quot;code\&quot;:\&quot;77386006\&quot;}]&#39;&quot;, nativeQuery = true)
+&nbsp;        List&lt;ObservationModel&gt; findPregnancyObservations(
+&nbsp;                        @Param(&quot;patientIds&quot;) List&lt;String&gt; patientIds,
+&nbsp;                        @Param(&quot;startDate&quot;) String startDate,
+&nbsp;                        @Param(&quot;endDate&quot;) String endDate);
+&nbsp;
+&nbsp;        @RestResource()
+&nbsp;        @Query(value = &quot;SELECT * FROM observations o &quot; +
+&nbsp;                        &quot;WHERE o.resource-&gt;&#39;context&#39;-&gt;&gt;&#39;reference&#39; = :locationId &quot; +
+&nbsp;                        &quot;AND o.resource-&gt;&#39;code&#39;-&gt;&#39;coding&#39;-&gt;0-&gt;&gt;&#39;code&#39; = :code&quot;, nativeQuery = true)
+&nbsp;        List&lt;ObservationModel&gt; findByLocationAndCode(
+&nbsp;                        @Param(&quot;locationId&quot;) String locationId,
+&nbsp;                        @Param(&quot;code&quot;) String code);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-15 01:28</div>
+</div>
+</body>
+</html>

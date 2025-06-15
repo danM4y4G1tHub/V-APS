@@ -1,0 +1,101 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SpecimenRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cesim.individuals.infrastructure.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: SpecimenRepository (cesim.individuals.infrastructure.repository)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">SpecimenRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cesim.individuals.infrastructure.repository;
+&nbsp;
+&nbsp;
+&nbsp;import cesim.individuals.infrastructure.repository.models.SpecimenModel;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.Pageable;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.data.repository.CrudRepository;
+&nbsp;import org.springframework.data.repository.PagingAndSortingRepository;
+&nbsp;import org.springframework.data.repository.query.Param;
+&nbsp;import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+&nbsp;import org.springframework.data.rest.core.annotation.RestResource;
+&nbsp;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;
+&nbsp;@Tag(
+&nbsp;        name = &quot;Specimens&quot;,
+&nbsp;        description = &quot;The specimens related service&quot;
+&nbsp;)
+&nbsp;@RepositoryRestResource(path = &quot;Specimens&quot;)
+&nbsp;public interface SpecimenRepository extends JpaRepository&lt;SpecimenModel, String&gt;,
+&nbsp;        JpaSpecificationExecutor&lt;SpecimenModel&gt;, CrudRepository&lt;SpecimenModel, String&gt;,
+&nbsp;        PagingAndSortingRepository&lt;SpecimenModel, String&gt; {
+&nbsp;  @RestResource()
+&nbsp;  @Query(value = &quot;SELECT * FROM specimens e &quot; +
+&nbsp;          &quot;WHERE e.resource-&gt;&#39;collection&#39;-&gt;&gt;&#39;collectedDateTime&#39; &gt; :afterDate&quot;
+&nbsp;          , nativeQuery = true)
+&nbsp;  Page&lt;SpecimenModel&gt; findByCollectionDateAfter(
+&nbsp;          @Param(&quot;afterDate&quot;) LocalDateTime afterDate, Pageable pageable);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-15 01:28</div>
+</div>
+</body>
+</html>

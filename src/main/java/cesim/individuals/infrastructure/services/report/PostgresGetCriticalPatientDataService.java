@@ -10,6 +10,7 @@ import cesim.individuals.infrastructure.services.practitioner.PostgresGetPractit
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.management.AttributeNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,25 +44,31 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
 
       List<ConditionModel> conditionModels = conditionRepository.findByPatientId(patientId);
       List<EncounterModel> encounterModels = encounterRepository.findByPatientId(patientId);
-
-      String encounterId = "";
+      List<ObservationModel> observationModels = new ArrayList<>();
 
       if (encounterModels.size() != 0) {
-        encounterId = encounterModels.get(0).getResource().id();
+        String encounterId = encounterModels.get(0).getResource().id();
+        observationModels = observationRepository.findByEncounterId(encounterId);
       }
-
-      List<ObservationModel> observationModels = observationRepository.findByEncounterId(encounterId);
 
       String practitionerReference = "";
       Practitioner practitioner = null;
-      if (medicationModels.size() != 0) {
+      if (!medicationModels.isEmpty() &&
+              medicationModels.get(0).getResource() != null &&
+              medicationModels.get(0).getResource().requester() != null
+      ) {
         practitionerReference = medicationModels.get(0).getResource().requester().reference();
 
-        String practitionerId = "";
-        if(practitionerReference != null){
-          practitionerId = practitionerReference.split("/")[1];
+        if(practitionerReference.contains("/")){
+          String practitionerId = practitionerReference.split("/")[1];
+
+          try {
+          practitioner = practitionerByIdService.getById(practitionerId);
+
+          } catch (RuntimeException ex){
+            practitioner = null;
+          }
         }
-        practitioner = practitionerByIdService.getById(practitionerId);
       }
 
       List<RelatedPersonModel> relatedPersonModels = relatedPersonRepository.getByPatientId(patientId);
@@ -79,7 +86,7 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
               createCarePlansInfo(carePlanModel)
       );
     } catch (Exception e) {
-        throw new Exception("An error occurred while searching for critical patient data", e);
+        throw new RuntimeException(e.getMessage(), e.getCause());
     }
   }
 
@@ -146,7 +153,7 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
     List<CriticalPatientDataDTO.EncounterInfo> encounterInfos = encounterModels.stream()
             .map(e ->
                     new CriticalPatientDataDTO.EncounterInfo(
-                            e.getResource().period(),
+                            e.getResource().actualPeriod(),
                             e.getResource().type(),
                             e.getResource().reason()
                     )
@@ -173,7 +180,8 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
   }
 
   private CriticalPatientDataDTO.PractitionerInfo createPractitionerInfo(Practitioner practitioner) {
-    if (practitioner == null) return new CriticalPatientDataDTO.PractitionerInfo(null, null, null);
+    if (practitioner == null) return new CriticalPatientDataDTO
+            .PractitionerInfo(null, null, null);
 
     return new CriticalPatientDataDTO.PractitionerInfo(
             practitioner.name(),

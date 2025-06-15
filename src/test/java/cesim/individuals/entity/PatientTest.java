@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -17,9 +18,8 @@ public class PatientTest {
 
   @Test
   void patientShouldMapFhirFieldsCorrectly() {
-    // Fechas simuladas para Period
-    Date startDate = new Date();
-    Date endDate = new Date();
+    Instant startDate = Instant.parse("2023-10-05T08:00:00Z");
+    Instant endDate = Instant.parse("2023-10-05T08:30:00Z");
 
     // Identifier
     Identifier identifier = new Identifier(

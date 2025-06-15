@@ -1,5 +1,7 @@
 package cesim.individuals.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,6 +32,7 @@ public record RelatedPerson(
       this.value = value;
     }
 
+    @JsonValue
     public String getValue() {
       return value;
     }

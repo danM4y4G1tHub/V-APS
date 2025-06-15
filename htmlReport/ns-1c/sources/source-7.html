@@ -1,0 +1,281 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ReportController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cesim.individuals.presentation</a>
+</div>
+
+<h1>Coverage Summary for Class: ReportController (cesim.individuals.presentation)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ReportController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cesim.individuals.presentation;
+&nbsp;
+&nbsp;import cesim.individuals.application.report.ReportScheduler;
+&nbsp;import cesim.individuals.domain.entities.report.outputDTO.*;
+&nbsp;import cesim.individuals.domain.entities.report.specInput.AbsenceTrackingSpec;
+&nbsp;import cesim.individuals.domain.entities.report.specInput.AdvancedSearchRequestSpec;
+&nbsp;import cesim.individuals.domain.entities.report.specInput.ClinicalReportFilterSpec;
+&nbsp;import cesim.individuals.domain.entities.report.specInput.RecentEncounterSpec;
+&nbsp;import cesim.individuals.domain.usecases.report.*;
+&nbsp;import cesim.individuals.domain.utils.Page;
+&nbsp;import cesim.individuals.domain.utils.Pageable;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.concurrent.CompletableFuture;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/v1/report&quot;)
+<b class="nc">&nbsp;@RequiredArgsConstructor</b>
+&nbsp;public class ReportController {
+&nbsp;  private final GetCriticalPatientDataUseCase criticalPatientDataUseCase;
+&nbsp;  private final GenerateDerivationReportUsecase derivationReportUseCase;
+&nbsp;  private final ClinicalReportFilterUseCase clinicalReportFilterUseCase;
+&nbsp;  private final AdvancedSearchUseCase advancedSearchUsecase;
+&nbsp;  private final GetRecentEncountersUseCase recentEncountersUseCase;
+&nbsp;  private final AssessPatientsRiskUseCase assessPatientsRiskUsecase;
+&nbsp;  private final ReportScheduler reportScheduler;
+&nbsp;  private final GenerateCommunityReportUseCase generateCommunityReportUseCase;
+&nbsp;  private final GenerateCDRReportsUseCase generateCDRReportsUseCase;
+&nbsp;  private final MedicalStaffFilterUseCase medicalStaffFilterUseCase;
+&nbsp;  private final GenerateAbsenceTrackingReportUseCase generateAbsenceTrackingReportUseCase;
+&nbsp;
+&nbsp;  //RF02
+&nbsp;  @GetMapping(&quot;/urgency/{CI}&quot;)
+&nbsp;  public CompletableFuture&lt;CriticalPatientDataDTO&gt; getCriticalPatientData(@PathVariable String CI) {
+<b class="nc">&nbsp;    return criticalPatientDataUseCase.execute(</b>
+&nbsp;                    new GetCriticalPatientDataUseCase.Input(CI))
+<b class="nc">&nbsp;            .thenApply(GetCriticalPatientDataUseCase.Output::patientData);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  //RF03
+&nbsp;  @PostMapping(&quot;/filter&quot;)
+&nbsp;  public CompletableFuture&lt;ClinicalReportDTO&gt; reportFilter(
+&nbsp;          @RequestParam(defaultValue = &quot;0&quot;) int page,
+&nbsp;          @RequestParam(defaultValue = &quot;10&quot;) int size,
+&nbsp;          @RequestParam(defaultValue = &quot;asc&quot;) String sortDirection,
+&nbsp;          @RequestParam(defaultValue = &quot;id&quot;) String sortBy,
+&nbsp;          @RequestBody ClinicalReportFilterSpec filterSpecs
+&nbsp;  ) {
+<b class="nc">&nbsp;    return clinicalReportFilterUseCase.execute(</b>
+&nbsp;            new ClinicalReportFilterUseCase.Input(
+&nbsp;                    new Pageable(page, size, sortBy, sortDirection),
+&nbsp;                    filterSpecs)
+<b class="nc">&nbsp;    ).thenApply(ClinicalReportFilterUseCase.Output::clinicalReportDTO);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  //RF04
+&nbsp;  @GetMapping(&quot;/derivation/{patientId}&quot;)
+&nbsp;  public CompletableFuture&lt;DerivationReportDTO&gt; generateDerivationReport(@PathVariable String patientId) {
+<b class="nc">&nbsp;    return derivationReportUseCase.execute(</b>
+&nbsp;                    new GenerateDerivationReportUsecase.Input(patientId))
+<b class="nc">&nbsp;            .thenApply(GenerateDerivationReportUsecase.Output::derivationReport);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  //RF05
+&nbsp;  @PostMapping(&quot;/search&quot;)
+&nbsp;  public CompletableFuture&lt;AdvancedSearchResultsDTO&gt; advancedSearch(
+&nbsp;          @RequestParam(defaultValue = &quot;0&quot;) int page,
+&nbsp;          @RequestParam(defaultValue = &quot;10&quot;) int size,
+&nbsp;          @RequestParam(defaultValue = &quot;asc&quot;) String sortDirection,
+&nbsp;          @RequestParam(defaultValue = &quot;id&quot;) String sortBy,
+&nbsp;          @RequestBody AdvancedSearchRequestSpec searchRequest
+&nbsp;  ) {
+<b class="nc">&nbsp;    return advancedSearchUsecase.execute(</b>
+&nbsp;                    new AdvancedSearchUseCase.Input(
+&nbsp;                            new Pageable(page, size, sortBy, sortDirection),
+&nbsp;                            searchRequest)
+&nbsp;            )
+<b class="nc">&nbsp;            .thenApply(AdvancedSearchUseCase.Output::resultsDTO);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  //RF06
+&nbsp;  @PostMapping(&quot;/recent-encounters&quot;)
+&nbsp;  public CompletableFuture&lt;Page&lt;RecentEncounterDTO&gt;&gt; recentEncounters(
+&nbsp;          @RequestParam(defaultValue = &quot;0&quot;) int page,
+&nbsp;          @RequestParam(defaultValue = &quot;10&quot;) int size,
+&nbsp;          @RequestParam(defaultValue = &quot;asc&quot;) String sortDirection,
+&nbsp;          @RequestParam(defaultValue = &quot;id&quot;) String sortBy,
+&nbsp;          @RequestBody RecentEncounterSpec recentRequest
+&nbsp;  ) {
+<b class="nc">&nbsp;    return recentEncountersUseCase.execute(</b>
+&nbsp;            new GetRecentEncountersUseCase.Input(
+&nbsp;                    new Pageable(page, size, sortBy, sortDirection),
+&nbsp;                    recentRequest
+&nbsp;            )
+<b class="nc">&nbsp;    ).thenApply(GetRecentEncountersUseCase.Output::encounterDTO);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  //RF07
+&nbsp;  @PostMapping(&quot;/risk-priority&quot;)
+&nbsp;  public CompletableFuture&lt;Page&lt;PatientRiskPriorityDTO&gt;&gt; riskPriorityList(
+&nbsp;          @RequestParam(defaultValue = &quot;0&quot;) int page,
+&nbsp;          @RequestParam(defaultValue = &quot;10&quot;) int size,
+&nbsp;          @RequestParam(defaultValue = &quot;asc&quot;) String sortDirection,
+&nbsp;          @RequestParam(defaultValue = &quot;id&quot;) String sortBy
+&nbsp;  ) {
+<b class="nc">&nbsp;    return assessPatientsRiskUsecase.execute(</b>
+&nbsp;            new AssessPatientsRiskUseCase.Input(
+&nbsp;                    new Pageable(page, size, sortBy, sortDirection))
+<b class="nc">&nbsp;    ).thenApply(AssessPatientsRiskUseCase.Output::riskPriorities);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  //RF10
+&nbsp;  @GetMapping(&quot;/monthly-report&quot;)
+&nbsp;  public String getMonthlyReport() {
+<b class="nc">&nbsp;    System.out.println(&quot;Requesting Monthly Report&quot;);</b>
+<b class="nc">&nbsp;    reportScheduler.generateMonthlyReport();</b>
+<b class="nc">&nbsp;    return &quot;Request received successfully&quot;;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  // Download PDF ReportMonthly
+&nbsp;  // Download EXCEL ReportMonthly
+&nbsp;
+&nbsp;  //RF12-Community
+&nbsp;  @GetMapping(&quot;/community/{communityId}&quot;)
+&nbsp;  public CompletableFuture&lt;CommunityReportDTO&gt; generateCommunityReport(
+&nbsp;          @PathVariable String communityId
+&nbsp;  ){
+<b class="nc">&nbsp;    return generateCommunityReportUseCase.execute(</b>
+&nbsp;            new GenerateCommunityReportUseCase.Input(communityId)
+&nbsp;            )
+<b class="nc">&nbsp;            .thenApply(GenerateCommunityReportUseCase.Output::reportDTO);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  //RF12-CDR
+&nbsp;  @GetMapping(&quot;/cdrs/{communityId}&quot;)
+&nbsp;  public CompletableFuture&lt;List&lt;CDRReportDTO&gt;&gt; generateCDRReports(
+&nbsp;          @PathVariable String communityId
+&nbsp;  ){
+<b class="nc">&nbsp;    return generateCDRReportsUseCase.execute(</b>
+&nbsp;            new GenerateCDRReportsUseCase.Input(communityId)
+<b class="nc">&nbsp;    ).thenApply(GenerateCDRReportsUseCase.Output::reportDTO);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  //RF13
+&nbsp;  @GetMapping(&quot;/medical-staff&quot;)
+&nbsp;  public CompletableFuture&lt;Page&lt;MedicalStaffCountDTO&gt;&gt; generateMedicalStaffFilter(
+&nbsp;          @RequestParam(defaultValue = &quot;0&quot;) int page,
+&nbsp;          @RequestParam(defaultValue = &quot;10&quot;) int size,
+&nbsp;          @RequestParam(defaultValue = &quot;asc&quot;) String sortDirection,
+&nbsp;          @RequestParam(defaultValue = &quot;id&quot;) String sortBy
+&nbsp;  ){
+<b class="nc">&nbsp;    return medicalStaffFilterUseCase.execute(</b>
+&nbsp;            new MedicalStaffFilterUseCase.Input(
+&nbsp;                    new Pageable(page, size, sortBy, sortDirection)
+&nbsp;            )
+<b class="nc">&nbsp;    ).thenApply(MedicalStaffFilterUseCase.Output::resultsDTO);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  //RF14
+&nbsp;  @PostMapping(&quot;/absence&quot;)
+&nbsp;  public CompletableFuture&lt;Page&lt;AbsenceReportDTO&gt;&gt; absenceTrackingReport(
+&nbsp;          @RequestParam(defaultValue = &quot;0&quot;) int page,
+&nbsp;          @RequestParam(defaultValue = &quot;10&quot;) int size,
+&nbsp;          @RequestParam(defaultValue = &quot;asc&quot;) String sortDirection,
+&nbsp;          @RequestParam(defaultValue = &quot;id&quot;) String sortBy,
+&nbsp;          @RequestBody() AbsenceTrackingSpec trackingSpec
+&nbsp;          ){
+<b class="nc">&nbsp;    return generateAbsenceTrackingReportUseCase.execute(</b>
+&nbsp;            new GenerateAbsenceTrackingReportUseCase.Input(
+&nbsp;                    new Pageable(page, size, sortBy, sortDirection),
+&nbsp;                    trackingSpec
+&nbsp;            )
+<b class="nc">&nbsp;    ).thenApply(GenerateAbsenceTrackingReportUseCase.OutPut::reportDTO);</b>
+&nbsp;  }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-15 01:28</div>
+</div>
+</body>
+</html>
