@@ -4,6 +4,7 @@ import cesim.individuals.domain.entities.ImmunizationRecommendation;
 import cesim.individuals.domain.entities.vaccine.VaccineReportDTO;
 import cesim.individuals.domain.usecases.vacinne.GenerateVaccineReportUseCase;
 import cesim.individuals.domain.usecases.vacinne.depenencies.VaccineManagementService;
+import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,8 @@ public class VaccineController {
   @GetMapping("/report")
   public CompletableFuture<VaccineReportDTO> generateVaccineReport(
           @RequestParam(value = "date", required = false)
-          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+          @Valid @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          LocalDate date
   ){
     if(date == null) date = LocalDate.now();
 

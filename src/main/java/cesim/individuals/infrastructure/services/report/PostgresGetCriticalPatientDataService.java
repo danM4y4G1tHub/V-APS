@@ -10,7 +10,6 @@ import cesim.individuals.infrastructure.services.practitioner.PostgresGetPractit
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.management.AttributeNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,8 +46,9 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
       List<ObservationModel> observationModels = new ArrayList<>();
 
       if (encounterModels.size() != 0) {
-        String encounterId = encounterModels.get(0).getResource().id();
-        observationModels = observationRepository.findByEncounterId(encounterId);
+        observationModels = observationRepository.findByEncounterId(
+                encounterModels.get(0).getResource().id()
+        );
       }
 
       String practitionerReference = "";
@@ -59,15 +59,10 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
       ) {
         practitionerReference = medicationModels.get(0).getResource().requester().reference();
 
-        if(practitionerReference.contains("/")){
+        if (practitionerReference.contains("/")) {
           String practitionerId = practitionerReference.split("/")[1];
 
-          try {
           practitioner = practitionerByIdService.getById(practitionerId);
-
-          } catch (RuntimeException ex){
-            practitioner = null;
-          }
         }
       }
 
@@ -78,7 +73,7 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
               createPatientInfo(patientModel),
               createAllergiesInfo(intoleranceModels),
               createMedicationsInfo(medicationModels),
-              createContionsInfo(conditionModels),
+              createConditionsInfo(conditionModels),
               createEncounterInfo(encounterModels),
               createObservationsInfo(observationModels),
               createPractitionerInfo(practitioner),
@@ -86,7 +81,7 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
               createCarePlansInfo(carePlanModel)
       );
     } catch (Exception e) {
-        throw new RuntimeException(e.getMessage(), e.getCause());
+      throw new RuntimeException(e.getMessage(), e.getCause());
     }
   }
 
@@ -133,7 +128,7 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
     return medicationsInfos;
   }
 
-  private List<CriticalPatientDataDTO.ConditionsInfo> createContionsInfo(List<ConditionModel> conditionModels) {
+  private List<CriticalPatientDataDTO.ConditionsInfo> createConditionsInfo(List<ConditionModel> conditionModels) {
     if (conditionModels.size() == 0) return new ArrayList<>();
 
     List<CriticalPatientDataDTO.ConditionsInfo> conditions = conditionModels.stream()
@@ -164,8 +159,6 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
   }
 
   private List<CriticalPatientDataDTO.ObservationsInfo> createObservationsInfo(List<ObservationModel> observationModels) {
-    if (observationModels.size() == 0) return new ArrayList<>();
-
     List<CriticalPatientDataDTO.ObservationsInfo> observationsInfos = observationModels.stream()
             .map(o ->
                     new CriticalPatientDataDTO.ObservationsInfo(

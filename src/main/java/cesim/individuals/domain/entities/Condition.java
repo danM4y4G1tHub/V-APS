@@ -36,6 +36,45 @@ public record Condition(
         List<Reference> evidence,
         List<Annotation> note
 ) {
+  public Condition(
+          String id,
+          CodeableConcept clinicalStatus,
+          CodeableConcept code,
+          Reference subject,
+          Reference encounter,
+          LocalDateTime recordedDate,
+          List<Condition.Participant> participant
+          ){
+    this(
+            "Condition",
+            id,
+            null,
+            clinicalStatus,
+            null,
+            null,
+            null,
+            code,
+            null,
+            subject,
+            encounter,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            recordedDate,
+            participant,
+            null,
+            null,
+            null
+            );
+  }
+
   public record Participant(
           CodeableConcept function,
           Reference actor

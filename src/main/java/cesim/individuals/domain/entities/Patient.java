@@ -31,6 +31,43 @@ public record Patient(
         List<Reference> generalPractitioner,
         Reference managingOrganization,
         List<Link> link) {
+
+  public Patient(
+          String id,
+          List<Identifier> identifier,
+          boolean active,
+          List<HumanName> name,
+          List<ContactPoint> telecom,
+          Gender gender,
+          LocalDate birthDate,
+          List<Address> address,
+          CodeableConcept maritalStatus,
+          List<Contact> contact,
+          List<Reference> generalPractitioner
+  ){
+    this(
+            "Patient",
+            id,
+            identifier,
+            active,
+            name,
+            telecom,
+            gender,
+            birthDate,
+            null,
+            null,
+            address,
+            maritalStatus,
+            null,
+            null,
+            null,
+            contact,
+            null,
+            generalPractitioner,
+            null,
+            null
+    );
+  }
   public enum Gender {
     MALE("male"),
     FEMALE("female"),

@@ -78,7 +78,7 @@ INSERT INTO patients (id, resource) VALUES
   }],
   "maritalStatus": {"coding": [{"code": "M", "display": "Casada"}]},
   "generalPractitioner": [{"reference": "Practitioner/65432109-abcd-4321-abcd-9876543210ff"}]
-}'::jsonb)
+}'::jsonb),
 ('f8a9b0c1-2222-3333-4444-555566667777',
 '{
   "resourceType": "Patient",
@@ -389,7 +389,9 @@ INSERT INTO practitioners (id, resource) VALUES
         "text": "Doctor en Medicina"
       },
       "period": {"start": "2010-01-01T08:00:00Z"},
-      "issuer": {"reference": "Organization/0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a"}}]}'::jsonb),
+      "issuer": {"reference": "Organization/0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a"}
+      }]
+    }'::jsonb),
 ('f1a2b3c4-d5e6-7890-ab12-34567890abcd',
 '{
   "resourceType": "Practitioner",
@@ -413,7 +415,33 @@ INSERT INTO practitioners (id, resource) VALUES
   "active": true,
   "name": [{
     "use": "official",
-    "family": "Gómez", "given": ["Isabel"]}], "telecom": [{"system": "phone", "value": "+5358772211"}], "gender": "female", "address": [{"use": "work", "type": "physical", "line": ["Calle Martí #22"], "city": "Santiago de Cuba", "state": "Santiago de Cuba", "postalCode": "90100", "country": "Cuba", "location": {"reference": "Location/9e8d7c6b-5a4f-3210-badc-654321fedcba"}}], "qualification": [{"identifier": [{"system": "http://minsap.cu/certificados", "value": "CERT-321"}], "code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360/2.7", "code": "PUL", "display": "Pulmonologist"}], "text": "Especialista en Neumología"}, "period": {"start": "2015-03-01T08:00:00Z"}, "issuer": {"reference": "Organization/9e8d7c6b-5a4f-3210-badc-654321fedcba"}}]}'::jsonb),
+    "family": "Gómez", "given": ["Isabel"]
+  }],
+  "telecom": [{
+    "system": "phone", "value": "+5358772211"
+  }],
+  "gender": "female",
+  "address": [{
+    "use": "work", "type": "physical", "line": ["Calle Martí #22"],
+    "city": "Santiago de Cuba", "state": "Santiago de Cuba",
+    "postalCode": "90100",
+    "country": "Cuba",
+    "location": {"reference": "Location/9e8d7c6b-5a4f-3210-badc-654321fedcba"}
+  }],
+  "qualification": [{
+    "identifier": [{
+      "system": "http://minsap.cu/certificados", "value": "CERT-321"
+    }],
+    "code": {
+      "coding": [{
+        "system": "http://terminology.hl7.org/CodeSystem/v2-0360/2.7", "code": "PUL", "display": "Pulmonologist"
+      }],
+      "text": "Especialista en Neumología"
+    },
+    "period": {"start": "2015-03-01T08:00:00Z"},
+    "issuer": {"reference": "Organization/9e8d7c6b-5a4f-3210-badc-654321fedcba"}
+  }]
+}'::jsonb),
 ('22345678-1234-1234-1234-123456789abc',
 '{
   "resourceType": "Practitioner",
@@ -5961,9 +5989,7 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
         "display": "Hepatitis B"
       }]
     },
-    "forecastStatus": {
-      "coding": [{
-        "system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status",
+    "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status",
         "code": "due",
         "display": "Dose is due"
       }]
@@ -5987,8 +6013,18 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "bcg-0001-0001-0001-000000000001",
   "patient": {"reference": "Patient/bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "01", "display": "BCG"}],
-    "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "complete", "display": "All doses complete"}]},
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx", "code": "01", "display": "BCG"
+      }]
+    },
+    "forecastStatus": {
+      "coding": [{
+        "system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status",
+        "code": "complete",
+        "display": "All doses complete"
+      }]
+    },
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
       "value": "1990-09-10T00:00:00"
@@ -6002,7 +6038,11 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "opv-0002-0002-0002-000000000002",
   "patient": {"reference": "Patient/c1d2e3f4-5678-90ab-cdef-1234567890ab"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "89", "display": "Polio (OPV)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx", "code": "89", "display": "Polio (OPV)"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6017,7 +6057,11 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "pent-0003-0003-0003-000000000003",
   "patient": {"reference": "Patient/f8a9b0c1-2222-3333-4444-555566667777"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "107", "display": "Pentavalente (DTP-HepB-Hib)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx", "code": "107", "display": "Pentavalente (DTP-HepB-Hib)"
+      }]
+      },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6032,7 +6076,11 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "dtp-0004-0004-0004-000000000004",
   "patient": {"reference": "Patient/d5e6f7a8-1234-4567-89ab-cdef12345678"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "50", "display": "DTP (Triple bacteriana)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx", "code": "50", "display": "DTP (Triple bacteriana)"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6047,7 +6095,11 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "mmr-0005-0005-0005-000000000005",
   "patient": {"reference": "Patient/a2b3c4d5-e6f7-890a-bcde-f1234567890e"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "03", "display": "MMR (Triple viral)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx", "code": "03", "display": "MMR (Triple viral)"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6062,7 +6114,11 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "sob-0006-0006-0006-000000000006",
   "patient": {"reference": "Patient/01a2b3c4-d5e6-7890-abcd-ef1234567890"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "SOB", "display": "Soberana 02 (COVID-19)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx", "code": "SOB", "display": "Soberana 02 (COVID-19)"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6077,7 +6133,11 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "abd-0007-0007-0007-000000000007",
   "patient": {"reference": "Patient/02b3c4d5-e6f7-890a-bcde-f12345678901"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "ABD", "display": "Abdala (COVID-19)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx", "code": "ABD", "display": "Abdala (COVID-19)"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6092,7 +6152,13 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "hep-0008-0008-0008-000000000008",
   "patient": {"reference": "Patient/03c4d5e6-f7a8-9012-bcde-f23456789012"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "08", "display": "Hepatitis B"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx",
+        "code": "08",
+        "display": "Hepatitis B"
+        }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "complete", "display": "All doses complete"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6107,7 +6173,13 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "pent-0009-0009-0009-000000000009",
   "patient": {"reference": "Patient/04d5e6f7-a8b9-0123-cdef-345678901234"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "107", "display": "Pentavalente (DTP-HepB-Hib)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx",
+        "code": "107",
+        "display": "Pentavalente (DTP-HepB-Hib)"
+        }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "complete", "display": "All doses complete"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6122,7 +6194,11 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "bcg-0010-0010-0010-000000000010",
   "patient": {"reference": "Patient/05e6f7a8-b9c0-1234-def0-567890123456"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "01", "display": "BCG"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx", "code": "01", "display": "BCG"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "complete", "display": "All doses complete"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6137,7 +6213,11 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "bcg-0011-0011-0011-000000000011",
   "patient": {"reference": "Patient/06f7a8b9-c0d1-2345-ef01-678901234567"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "01", "display": "BCG"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx", "code": "01", "display": "BCG"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "complete", "display": "All doses complete"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6152,7 +6232,11 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "opv-0012-0012-0012-000000000012",
   "patient": {"reference": "Patient/07a8b9c0-d1e2-3456-f012-789012345678"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "89", "display": "Polio (OPV)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx", "code": "89", "display": "Polio (OPV)"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6167,7 +6251,12 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "pent-0013-0013-0013-000000000013",
   "patient": {"reference": "Patient/08b9c0d1-e2f3-4567-0123-890123456789"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "107", "display": "Pentavalente (DTP-HepB-Hib)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx",
+        "code": "107", "display": "Pentavalente (DTP-HepB-Hib)"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "complete", "display": "All doses complete"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6182,7 +6271,12 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "dtp-0014-0014-0014-000000000014",
   "patient": {"reference": "Patient/09c0d1e2-f345-6789-0123-901234567890"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "50", "display": "DTP (Triple bacteriana)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx",
+        "code": "50", "display": "DTP (Triple bacteriana)"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6197,7 +6291,12 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "mmr-0015-0015-0015-000000000015",
   "patient": {"reference": "Patient/10d1e2f3-4567-8901-2345-012345678901"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "03", "display": "MMR (Triple viral)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx",
+      "code": "03", "display": "MMR (Triple viral)"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6212,7 +6311,12 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "sob-0016-0016-0016-000000000016",
   "patient": {"reference": "Patient/1a2b3c4d-5e6f-7890-abcd-1234567890ef"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "SOB", "display": "Soberana 02 (COVID-19)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx",
+        "code": "SOB", "display": "Soberana 02 (COVID-19)"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6227,7 +6331,13 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "abd-0017-0017-0017-000000000017",
   "patient": {"reference": "Patient/2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "ABD", "display": "Abdala (COVID-19)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx",
+        "code": "ABD",
+        "display": "Abdala (COVID-19)"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "complete", "display": "All doses complete"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6242,7 +6352,10 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "hep-0018-0018-0018-000000000018",
   "patient": {"reference": "Patient/3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "08", "display": "Hepatitis B"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx", "code": "08", "display": "Hepatitis B"
+      }]},
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6257,7 +6370,9 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "pent-0019-0019-0019-000000000019",
   "patient": {"reference": "Patient/4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "107", "display": "Pentavalente (DTP-HepB-Hib)"}],
+    "vaccineCode": {
+    "coding": [{"system": "http://hl7.org/fhir/sid/cvx",
+    "code": "107", "display": "Pentavalente (DTP-HepB-Hib)"}]},
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6272,7 +6387,8 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "bcg-0020-0020-0020-000000000020",
   "patient": {"reference": "Patient/5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "01", "display": "BCG"}],
+    "vaccineCode": {
+    "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "01", "display": "BCG"}]},
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "complete", "display": "All doses complete"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6287,7 +6403,8 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "bcg-0021-0021-0021-000000000021",
   "patient": {"reference": "Patient/07a8b9c0-d1e2-3456-f012-789012345678"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "01", "display": "BCG"}],
+    "vaccineCode": {
+    "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "01", "display": "BCG"}]},
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6302,7 +6419,8 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "hep-0022-0022-0022-000000000022",
   "patient": {"reference": "Patient/07a8b9c0-d1e2-3456-f012-789012345678"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "08", "display": "Hepatitis B"}],
+    "vaccineCode": {
+    "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "08", "display": "Hepatitis B"}]},
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6317,7 +6435,8 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "opv-0023-0023-0023-000000000023",
   "patient": {"reference": "Patient/08b9c0d1-e2f3-4567-0123-890123456789"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "89", "display": "Polio (OPV)"}],
+    "vaccineCode": {
+    "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "89", "display": "Polio (OPV)"}]},
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6332,7 +6451,9 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "pent-0024-0024-0024-000000000024",
   "patient": {"reference": "Patient/08b9c0d1-e2f3-4567-0123-890123456789"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "107", "display": "Pentavalente (DTP-HepB-Hib)"}],
+    "vaccineCode": {
+    "coding": [{"system": "http://hl7.org/fhir/sid/cvx",
+    "code": "107", "display": "Pentavalente (DTP-HepB-Hib)"}]},
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6347,7 +6468,8 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "mmr-0025-0025-0025-000000000025",
   "patient": {"reference": "Patient/09c0d1e2-f345-6789-0123-901234567890"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "03", "display": "MMR (Triple viral)"}],
+    "vaccineCode": {
+    "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "03", "display": "MMR (Triple viral)"}]},
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6362,7 +6484,13 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "dtp-0026-0026-0026-000000000026",
   "patient": {"reference": "Patient/09c0d1e2-f345-6789-0123-901234567890"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "50", "display": "DTP (Triple bacteriana)"}],
+    "vaccineCode": {
+      "coding": [{
+        "system": "http://hl7.org/fhir/sid/cvx",
+        "code": "50",
+        "display": "DTP (Triple bacteriana)"
+      }]
+    },
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6377,7 +6505,9 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "dtp-0027-0027-0027-000000000027",
   "patient": {"reference": "Patient/10d1e2f3-4567-8901-2345-012345678901"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "50", "display": "DTP (Triple bacteriana)"}],
+    "vaccineCode": {
+
+    "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "50", "display": "DTP (Triple bacteriana)"}]},
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6392,7 +6522,9 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "mmr-0028-0028-0028-000000000028",
   "patient": {"reference": "Patient/10d1e2f3-4567-8901-2345-012345678901"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "03", "display": "MMR (Triple viral)"}],
+    "vaccineCode": {
+
+    "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "03", "display": "MMR (Triple viral)"}]},
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "complete", "display": "All doses complete"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6407,7 +6539,9 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "sob-0029-0029-0029-000000000029",
   "patient": {"reference": "Patient/bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "SOB", "display": "Soberana 02 (COVID-19)"}],
+    "vaccineCode": {
+
+    "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "SOB", "display": "Soberana 02 (COVID-19)"}]},
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "complete", "display": "All doses complete"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6422,7 +6556,9 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "id": "abd-0030-0030-0030-000000000030",
   "patient": {"reference": "Patient/c1d2e3f4-5678-90ab-cdef-1234567890ab"},
   "recommendation": [{
-    "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "ABD", "display": "Abdala (COVID-19)"}],
+    "vaccineCode": {
+
+    "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "ABD", "display": "Abdala (COVID-19)"}]},
     "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "complete", "display": "All doses complete"}]},
     "dateCriterion": [{
       "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6438,7 +6574,9 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "patient": {"reference": "Patient/08b9c0d1-e2f3-4567-0123-890123456789"},
   "recommendation": [
     {
-      "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "89", "display": "Polio (OPV)"}],
+      "vaccineCode": {
+
+      "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "89", "display": "Polio (OPV)"}]},
       "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
       "dateCriterion": [{
         "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6447,7 +6585,10 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
       "doseNumber": 4
     },
     {
-      "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "107", "display": "Pentavalente (DTP-HepB-Hib)"}],
+      "vaccineCode": {
+      "coding": [{"system": "http://hl7.org/fhir/sid/cvx",
+      "code": "107", "display": "Pentavalente (DTP-HepB-Hib)"}]
+      },
       "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
       "dateCriterion": [{
         "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6464,7 +6605,8 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "patient": {"reference": "Patient/03c4d5e6-f7a8-9012-bcde-f23456789012"},
   "recommendation": [
     {
-      "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "50", "display": "DTP (Triple bacteriana)"}],
+      "vaccineCode": {
+      "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "50", "display": "DTP (Triple bacteriana)"}]},
       "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
       "dateCriterion": [{
         "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6473,7 +6615,9 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
       "doseNumber": 1
     },
     {
-      "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "08", "display": "Hepatitis B"}],
+      "vaccineCode": {
+
+      "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "08", "display": "Hepatitis B"}]},
       "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Dose is due"}]},
       "dateCriterion": [{
         "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6490,7 +6634,8 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   "patient": {"reference": "Patient/bce2628f-12e5-4e3f-9a35-7a8e9b8d6f7a"},
   "recommendation": [
     {
-      "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "ABD", "display": "Abdala (COVID-19)"}],
+      "vaccineCode": {
+      "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "ABD", "display": "Abdala (COVID-19)"}]},
       "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "complete", "display": "All doses complete"}]},
       "dateCriterion": [{
         "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},
@@ -6499,7 +6644,8 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
       "doseNumber": 3
     },
     {
-      "vaccineCode": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "SOB", "display": "Soberana 02 (COVID-19)"}],
+      "vaccineCode": {
+      "coding": [{"system": "http://hl7.org/fhir/sid/cvx", "code": "SOB", "display": "Soberana 02 (COVID-19)"}]},
       "forecastStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status", "code": "due", "display": "Refuerzo recomendado"}]},
       "dateCriterion": [{
         "code": {"coding": [{"system": "http://loinc.org", "code": "30980-7", "display": "Earliest Date"}]},

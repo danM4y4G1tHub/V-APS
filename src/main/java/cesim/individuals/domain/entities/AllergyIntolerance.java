@@ -31,6 +31,37 @@ public record AllergyIntolerance(
         List<Annotation> note,
         List<Reaction> reaction
 ) {
+  public AllergyIntolerance(
+          String id,
+          CodeableConcept clinicalStatus,
+          CodeableConcept code,
+          Reference patient,
+          String criticality
+          ){
+    this(
+            "AllergyIntolerance",
+            id,
+            null,
+            clinicalStatus,
+            null,
+            null,
+            null,
+            criticality,
+            code,
+            patient,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
+  }
+
   public record Participant(
           CodeableConcept function,
           Reference actor // Practitioner

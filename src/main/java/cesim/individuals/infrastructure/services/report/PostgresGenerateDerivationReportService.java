@@ -15,6 +15,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,6 +50,8 @@ public class PostgresGenerateDerivationReportService implements GenerateDerivati
   }
 
   private List<DerivationReportDTO.ConditionInfo> getDiagnostics(List<ConditionModel> conditions) {
+    if(conditions == null) return new ArrayList<>();
+
     List<DerivationReportDTO.ConditionInfo> diagnostics = conditions.stream()
             .map(c ->
                     new DerivationReportDTO.ConditionInfo(c.getResource().code()))
@@ -58,6 +61,8 @@ public class PostgresGenerateDerivationReportService implements GenerateDerivati
   }
 
   private List<DerivationReportDTO.MedicationInfo> getTreatments(List<MedicationRequestModel> medicationsRequest) {
+    if(medicationsRequest == null) return new ArrayList<>();
+
     List<DerivationReportDTO.MedicationInfo> treatments = medicationsRequest.stream()
             .map(m ->
                     new DerivationReportDTO.MedicationInfo(m.getResource().dosageInstruction()))
@@ -67,6 +72,8 @@ public class PostgresGenerateDerivationReportService implements GenerateDerivati
   }
 
   private List<DerivationReportDTO.AllergyInfo> getAllergyIntolerances(List<AllergyIntoleranceModel> allergies) {
+    if(allergies == null) return new ArrayList<>();
+
     List<DerivationReportDTO.AllergyInfo> allergyIntolerances = allergies.stream()
             .map(a ->
                     new DerivationReportDTO.AllergyInfo(a.getResource().code()))

@@ -86,7 +86,7 @@ public class PostgresAdvancedSearchService implements AdvancedSearchService {
               criteriaBuilder.literal("name"),
               criteriaBuilder.literal("0"),
               criteriaBuilder.literal("given"),
-              criteriaBuilder.literal("0") // Primer elemento del array given
+              criteriaBuilder.literal("0")
       );
 
       String searchTerm = "%" + patientName.toLowerCase() + "%";
@@ -192,7 +192,7 @@ public class PostgresAdvancedSearchService implements AdvancedSearchService {
         predicates.add(criteriaBuilder.between(birthDate, fromDate, toDate));
       } else if (fromDate != null) {
         predicates.add(criteriaBuilder.greaterThanOrEqualTo(birthDate, fromDate));
-      } else if (toDate != null) {
+      } else {
         predicates.add(criteriaBuilder.lessThanOrEqualTo(birthDate, toDate));
       }
     }

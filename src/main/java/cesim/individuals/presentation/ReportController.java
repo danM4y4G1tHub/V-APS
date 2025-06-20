@@ -1,6 +1,7 @@
 package cesim.individuals.presentation;
 
 import cesim.individuals.application.report.ReportScheduler;
+import cesim.individuals.domain.entities.report.WhenPresent;
 import cesim.individuals.domain.entities.report.outputDTO.*;
 import cesim.individuals.domain.entities.report.specInput.AbsenceTrackingSpec;
 import cesim.individuals.domain.entities.report.specInput.AdvancedSearchRequestSpec;
@@ -9,7 +10,11 @@ import cesim.individuals.domain.entities.report.specInput.RecentEncounterSpec;
 import cesim.individuals.domain.usecases.report.*;
 import cesim.individuals.domain.utils.Page;
 import cesim.individuals.domain.utils.Pageable;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping("/api/v1/report")
 @RequiredArgsConstructor
+@Validated(WhenPresent.class)
 public class ReportController {
   private final GetCriticalPatientDataUseCase criticalPatientDataUseCase;
   private final GenerateDerivationReportUsecase derivationReportUseCase;
@@ -33,7 +39,10 @@ public class ReportController {
 
   //RF02
   @GetMapping("/urgency/{CI}")
-  public CompletableFuture<CriticalPatientDataDTO> getCriticalPatientData(@PathVariable String CI) {
+  public CompletableFuture<CriticalPatientDataDTO> getCriticalPatientData(
+          @Valid @PathVariable
+          String CI
+  ) {
     return criticalPatientDataUseCase.execute(
                     new GetCriticalPatientDataUseCase.Input(CI))
             .thenApply(GetCriticalPatientDataUseCase.Output::patientData);
@@ -46,7 +55,7 @@ public class ReportController {
           @RequestParam(defaultValue = "10") int size,
           @RequestParam(defaultValue = "asc") String sortDirection,
           @RequestParam(defaultValue = "id") String sortBy,
-          @RequestBody ClinicalReportFilterSpec filterSpecs
+          @Valid @RequestBody ClinicalReportFilterSpec filterSpecs
   ) {
     return clinicalReportFilterUseCase.execute(
             new ClinicalReportFilterUseCase.Input(
@@ -57,7 +66,13 @@ public class ReportController {
 
   //RF04
   @GetMapping("/derivation/{patientId}")
-  public CompletableFuture<DerivationReportDTO> generateDerivationReport(@PathVariable String patientId) {
+  public CompletableFuture<DerivationReportDTO> generateDerivationReport(
+          @Valid @PathVariable
+          @Pattern(
+                  regexp = "^[0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12}$",                  message = "Invalid UUID",
+                  flags = Pattern.Flag.CASE_INSENSITIVE
+          )
+          String patientId) {
     return derivationReportUseCase.execute(
                     new GenerateDerivationReportUsecase.Input(patientId))
             .thenApply(GenerateDerivationReportUsecase.Output::derivationReport);
@@ -70,7 +85,7 @@ public class ReportController {
           @RequestParam(defaultValue = "10") int size,
           @RequestParam(defaultValue = "asc") String sortDirection,
           @RequestParam(defaultValue = "id") String sortBy,
-          @RequestBody AdvancedSearchRequestSpec searchRequest
+          @Valid @RequestBody AdvancedSearchRequestSpec searchRequest
   ) {
     return advancedSearchUsecase.execute(
                     new AdvancedSearchUseCase.Input(
@@ -87,7 +102,7 @@ public class ReportController {
           @RequestParam(defaultValue = "10") int size,
           @RequestParam(defaultValue = "asc") String sortDirection,
           @RequestParam(defaultValue = "id") String sortBy,
-          @RequestBody RecentEncounterSpec recentRequest
+          @Valid @RequestBody RecentEncounterSpec recentRequest
   ) {
     return recentEncountersUseCase.execute(
             new GetRecentEncountersUseCase.Input(
@@ -125,7 +140,13 @@ public class ReportController {
   //RF12-Community
   @GetMapping("/community/{communityId}")
   public CompletableFuture<CommunityReportDTO> generateCommunityReport(
-          @PathVariable String communityId
+          @Valid @PathVariable
+          @Pattern(
+                  regexp = "^[0-9a-zA-Z]{5}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12}$",
+                  message = "Invalid UUID",
+                  flags = Pattern.Flag.CASE_INSENSITIVE
+          )
+          String communityId
   ){
     return generateCommunityReportUseCase.execute(
             new GenerateCommunityReportUseCase.Input(communityId)
@@ -136,7 +157,14 @@ public class ReportController {
   //RF12-CDR
   @GetMapping("/cdrs/{communityId}")
   public CompletableFuture<List<CDRReportDTO>> generateCDRReports(
-          @PathVariable String communityId
+          @Valid @PathVariable
+          @NotBlank(message = "Community´s id can't be empty")
+          @Pattern(
+                  regexp = "^[0-9a-zA-Z]{5}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12}$",
+                  message = "Invalid UUID",
+                  flags = Pattern.Flag.CASE_INSENSITIVE
+          )
+          String communityId
   ){
     return generateCDRReportsUseCase.execute(
             new GenerateCDRReportsUseCase.Input(communityId)
@@ -165,6 +193,8 @@ public class ReportController {
           @RequestParam(defaultValue = "10") int size,
           @RequestParam(defaultValue = "asc") String sortDirection,
           @RequestParam(defaultValue = "id") String sortBy,
+          @Valid
+          @Validated(WhenPresent.class)
           @RequestBody() AbsenceTrackingSpec trackingSpec
           ){
     return generateAbsenceTrackingReportUseCase.execute(

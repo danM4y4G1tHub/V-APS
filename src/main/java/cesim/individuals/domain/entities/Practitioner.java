@@ -24,9 +24,37 @@ public record Practitioner(
         List<Address> address,
         List<Attachment> photo,
         List<Qualification> qualification,
-        List<Communication> communication,
-        Reference issuer
+        List<Communication> communication
 ) {
+  public Practitioner(
+          String id,
+          List<Identifier> identifier,
+          boolean active,
+          List<HumanName> name,
+          List<ContactPoint> telecom,
+          Practitioner.Gender gender,
+          LocalDate birthDate,
+          List<Address> address,
+          List<Qualification> qualification
+  ){
+    this(
+            "Practitioner",
+            id,
+            identifier,
+            active,
+            name,
+            telecom,
+            gender,
+            birthDate,
+            null,
+            null,
+            address,
+            null,
+            qualification,
+            null
+    );
+  }
+
   public enum Gender {
     MALE("male"),
     FEMALE("female"),

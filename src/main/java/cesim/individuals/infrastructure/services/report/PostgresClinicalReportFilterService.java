@@ -1,26 +1,22 @@
 package cesim.individuals.infrastructure.services.report;
 
-import cesim.individuals.domain.utils.Page;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Predicate;
-
 import cesim.individuals.domain.entities.report.outputDTO.ClinicalReportDTO;
 import cesim.individuals.domain.entities.report.specInput.ClinicalReportFilterSpec;
 import cesim.individuals.domain.usecases.report.dependencies.ClinicalReportFilterService;
+import cesim.individuals.domain.utils.Page;
+import cesim.individuals.domain.utils.Pageable;
 import cesim.individuals.infrastructure.repository.ConditionRepository;
 import cesim.individuals.infrastructure.repository.PatientRepository;
 import cesim.individuals.infrastructure.repository.models.ConditionModel;
-
 import cesim.individuals.infrastructure.repository.models.PatientModel;
-
-import cesim.individuals.domain.utils.Pageable;
-
-import lombok.*;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,14 +29,29 @@ public class PostgresClinicalReportFilterService implements ClinicalReportFilter
   private final PatientRepository patientRepository;
   private final ConditionRepository conditionRepository;
 
-  public ClinicalReportDTO filterConditions(Pageable pageable, ClinicalReportFilterSpec filterSpec){
+  public ClinicalReportDTO filterConditions(Pageable pageable, ClinicalReportFilterSpec filterSpec) {
     Specification<PatientModel> patientSpec = createPatientSpecification(filterSpec);
     var patientSort = Sort.by(
-              pageable.sortDirection().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
-              pageable.sortBy());
+            pageable.sortDirection().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
+            pageable.sortBy());
 
     var patientResults = patientRepository.findAll(
             patientSpec, PageRequest.of(pageable.page(), pageable.size(), patientSort));
+
+    if(patientResults.isEmpty()) return new ClinicalReportDTO(
+            new Page<>(
+                    0,
+                    0,
+                    0,
+                    new ArrayList<>()
+            ),
+            new Page<>(
+                    0,
+                    0,
+                    0,
+                    new ArrayList<>()
+            )
+    );
 
     List<String> patientsId = patientResults.getContent().stream()
             .map(p -> p.getResource().id())
@@ -48,8 +59,10 @@ public class PostgresClinicalReportFilterService implements ClinicalReportFilter
 
     Specification<ConditionModel> conditionsSpec = createConditionSpecification(filterSpec, patientsId);
     var conditionResults = conditionRepository.findAll(conditionsSpec, PageRequest.of(pageable.page(),
-              pageable.size(),
-              patientSort));
+            pageable.size(),
+            patientSort));
+
+    if(conditionResults.isEmpty()) conditionResults = new PageImpl<>(new ArrayList<>());
 
     List<ClinicalReportDTO.PatientInfo> patientContent = patientResults.getContent().stream()
             .map(p -> new ClinicalReportDTO.PatientInfo(
@@ -73,6 +86,8 @@ public class PostgresClinicalReportFilterService implements ClinicalReportFilter
             ))
             .collect(Collectors.toList());
 
+    if(content == null) content = new ArrayList<>();
+
     return new ClinicalReportDTO(
             new Page<>(
                     patientResults.getNumber(),
@@ -89,11 +104,11 @@ public class PostgresClinicalReportFilterService implements ClinicalReportFilter
     );
   }
 
-  private Specification<PatientModel> createPatientSpecification(ClinicalReportFilterSpec filterSpec){
+  private Specification<PatientModel> createPatientSpecification(ClinicalReportFilterSpec filterSpec) {
     return (root, query, criteriaBuilder) -> {
       List<Predicate> predicates = new ArrayList<>();
 
-      if(filterSpec.patientIdentifier() != null){
+      if (filterSpec.patientIdentifier() != null) {
         predicates.add(criteriaBuilder.equal(
                 criteriaBuilder.function(
                         "jsonb_extract_path_text",
@@ -145,11 +160,11 @@ public class PostgresClinicalReportFilterService implements ClinicalReportFilter
 
       return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     };
-    }
+  }
 
   private Specification<ConditionModel> createConditionSpecification(
-      ClinicalReportFilterSpec filterSpec,
-      List<String> patientIds
+          ClinicalReportFilterSpec filterSpec,
+          List<String> patientIds
   ) {
     return (root, query, criteriaBuilder) -> {
       List<Predicate> predicates = new ArrayList<>();
