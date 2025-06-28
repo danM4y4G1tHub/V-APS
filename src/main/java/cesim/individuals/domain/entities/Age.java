@@ -11,15 +11,6 @@ public record Age(
         URI system,
         String code
 ) {
-  public Age {
-    Objects.requireNonNull(value, "El valor no puede ser nulo");
-    if (value.compareTo(BigDecimal.ZERO) < 0) {
-      throw new IllegalArgumentException("El valor de la edad no puede ser negativo");
-    }
-    if (comparator != null && value == null) {
-      throw new IllegalArgumentException("No se puede usar comparador sin valor");
-    }
-  }
 
   public static Age of(BigDecimal value, String unit) {
     return new Age(value, null, unit, null, null);

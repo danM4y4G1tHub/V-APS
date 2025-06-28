@@ -22,7 +22,6 @@ public class VaccineController {
   private final GenerateVaccineReportUseCase generateVaccineReportUseCase;
   private final VaccineManagementService managementService;
 
-  //RF11
   @GetMapping("/report")
   public CompletableFuture<VaccineReportDTO> generateVaccineReport(
           @RequestParam(value = "date", required = false)

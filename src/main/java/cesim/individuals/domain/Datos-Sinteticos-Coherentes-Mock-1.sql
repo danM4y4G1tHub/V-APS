@@ -5662,7 +5662,7 @@ INSERT INTO observations (id, resource) VALUES
   "valueQuantity": {"value": 6, "unit": "score"}
 }'::jsonb);
 
--- 14. RelatedPerson(22) ✔
+-- 13. RelatedPerson(22) ✔
 INSERT INTO related_persons (id, resource) VALUES
 ('4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a',
 '{
@@ -5974,7 +5974,7 @@ INSERT INTO related_persons (id, resource) VALUES
   "telecom": [{"system": "phone", "value": "+5355567891"}]
 }'::jsonb);
 
--- 15. ImmunizationRecommendation(31) ✔
+-- 14. ImmunizationRecommendation(31) ✔
 INSERT INTO immunization_recommendations (id, resource) VALUES
 ('1f8c4a2b-3b5d-4c6e-8e8d-1b2c3d4e5f6a',
 '{
@@ -6656,7 +6656,7 @@ INSERT INTO immunization_recommendations (id, resource) VALUES
   ]
 }'::jsonb);
 
--- 16. Organization(19) ✔
+-- 15. Organization(19) ✔
 INSERT INTO organizations (id, resource) VALUES
 ('0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a',
 '{
@@ -6792,7 +6792,7 @@ INSERT INTO organizations (id, resource) VALUES
   "address": [{"line": ["Carretera Central km 3"], "city": "Santiago de Cuba", "state": "Santiago de Cuba", "country": "Cuba"}]
 }'::jsonb);
 
--- 17. Location(54) ✔
+-- 16. Location(54) ✔
 INSERT INTO locations (id, resource) VALUES
 ('0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a',
 '{

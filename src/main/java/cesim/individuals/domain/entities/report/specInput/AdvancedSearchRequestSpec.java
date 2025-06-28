@@ -6,7 +6,6 @@ import jakarta.validation.groups.Default;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-
 public record AdvancedSearchRequestSpec(
         @NotBlank(message = "Patient's name can't be empty",
                 groups = WhenPresent.class)
