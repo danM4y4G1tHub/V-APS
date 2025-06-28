@@ -1,7 +1,9 @@
 package cesim.individuals.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record Identifier(
         Identifier.Use use,
         CodeableConcept type,

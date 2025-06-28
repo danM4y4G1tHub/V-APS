@@ -11,10 +11,10 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
-
 import cesim.individuals.infrastructure.repository.models.PatientModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.util.List;
 import java.util.Optional;
 
 @Tag(
@@ -28,7 +28,14 @@ public interface PatientRepository extends JpaRepository<PatientModel, String>,
   Page<PatientModel> findAll(Specification<PatientModel> spec, Pageable pageable);
 
   @RestResource()
-  @Query(value = "SELECT * FROM patients p where p.resource->'identifier'->0->>'value' = :identifier",
+  @Query(value = "SELECT * FROM patients p " +
+          "WHERE p.resource->'identifier'->0->>'value' = :identifier",
           nativeQuery = true)
-  Optional<PatientModel> findByIdentication(@Param("identifier") String identifier);
+  Optional<PatientModel> findByIdentification(@Param("identifier") String identifier);
+
+  @RestResource()
+  @Query(value = "SELECT * FROM patients p " +
+          "WHERE p.resource->'address'->0->>'location' = CONCAT('Location/', :locationId)"
+  , nativeQuery = true)
+  List<PatientModel> findByLocation(@Param("locationId") String locationId);
 }

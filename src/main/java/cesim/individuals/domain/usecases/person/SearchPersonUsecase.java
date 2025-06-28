@@ -14,7 +14,7 @@ public class SearchPersonUsecase implements Usecase<SearchPersonUsecase.Input, S
     public SearchPersonUsecase(SearchPersonService personService) {
         this.personService = personService;
     }
-    
+
     @Override
     public CompletableFuture<SearchPersonUsecase.Output> execute(SearchPersonUsecase.Input request) {
         return CompletableFuture.supplyAsync(() -> {
@@ -28,7 +28,7 @@ public class SearchPersonUsecase implements Usecase<SearchPersonUsecase.Input, S
             String query) {
     }
 
-    public static record Output( 
+    public static record Output(
             Page<Person> page) {
     }
 }

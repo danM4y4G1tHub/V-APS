@@ -1,13 +1,14 @@
 package cesim.individuals.infrastructure.services.report;
 
-import cesim.individuals.domain.entities.*;
+import cesim.individuals.domain.entities.Patient;
+import cesim.individuals.domain.entities.Practitioner;
 import cesim.individuals.domain.entities.report.outputDTO.CriticalPatientDataDTO;
 import cesim.individuals.domain.usecases.report.dependencies.GetCriticalPatientDataService;
 import cesim.individuals.infrastructure.repository.*;
 import cesim.individuals.infrastructure.repository.models.*;
 import cesim.individuals.infrastructure.services.practitioner.PostgresGetPractitionerByIdService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
   @Override
   public CriticalPatientDataDTO getCriticalDataByIdentification(String CI) throws Exception {
     try {
-      PatientModel patientModel = patientRepository.findByIdentication(CI)
+      PatientModel patientModel = patientRepository.findByIdentification(CI)
               .orElseThrow(() -> new IllegalArgumentException("Patient not found with CI: " + CI));
 
       Patient patient = patientModel.getResource();
@@ -42,22 +43,28 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
 
       List<ConditionModel> conditionModels = conditionRepository.findByPatientId(patientId);
       List<EncounterModel> encounterModels = encounterRepository.findByPatientId(patientId);
-
-      String encounterId = "";
+      List<ObservationModel> observationModels = new ArrayList<>();
 
       if (encounterModels.size() != 0) {
-        encounterId = encounterModels.get(0).getResource().id();
+        observationModels = observationRepository.findByEncounterId(
+                encounterModels.get(0).getResource().id()
+        );
       }
-
-      List<ObservationModel> observationModels = observationRepository.findByEncounterId(encounterId);
 
       String practitionerReference = "";
-      if (medicationModels.size() != 0) {
+      Practitioner practitioner = null;
+      if (!medicationModels.isEmpty() &&
+              medicationModels.get(0).getResource() != null &&
+              medicationModels.get(0).getResource().requester() != null
+      ) {
         practitionerReference = medicationModels.get(0).getResource().requester().reference();
-      }
 
-      String practitionerId = practitionerReference.split("/")[1];
-      Practitioner practitioner = practitionerByIdService.getById(practitionerId);
+        if (practitionerReference.contains("/")) {
+          String practitionerId = practitionerReference.split("/")[1];
+
+          practitioner = practitionerByIdService.getById(practitionerId);
+        }
+      }
 
       List<RelatedPersonModel> relatedPersonModels = relatedPersonRepository.getByPatientId(patientId);
       List<CarePlanModel> carePlanModel = carePlanRepository.findByPatientId(patientId);
@@ -66,7 +73,7 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
               createPatientInfo(patientModel),
               createAllergiesInfo(intoleranceModels),
               createMedicationsInfo(medicationModels),
-              createContionsInfo(conditionModels),
+              createConditionsInfo(conditionModels),
               createEncounterInfo(encounterModels),
               createObservationsInfo(observationModels),
               createPractitionerInfo(practitioner),
@@ -74,7 +81,7 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
               createCarePlansInfo(carePlanModel)
       );
     } catch (Exception e) {
-      throw new Exception("An error occoured while searching for critical patient data", e);
+      throw new RuntimeException(e.getMessage(), e.getCause());
     }
   }
 
@@ -121,7 +128,7 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
     return medicationsInfos;
   }
 
-  private List<CriticalPatientDataDTO.ConditionsInfo> createContionsInfo(List<ConditionModel> conditionModels) {
+  private List<CriticalPatientDataDTO.ConditionsInfo> createConditionsInfo(List<ConditionModel> conditionModels) {
     if (conditionModels.size() == 0) return new ArrayList<>();
 
     List<CriticalPatientDataDTO.ConditionsInfo> conditions = conditionModels.stream()
@@ -152,8 +159,6 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
   }
 
   private List<CriticalPatientDataDTO.ObservationsInfo> createObservationsInfo(List<ObservationModel> observationModels) {
-    if (observationModels.size() == 0) return new ArrayList<>();
-
     List<CriticalPatientDataDTO.ObservationsInfo> observationsInfos = observationModels.stream()
             .map(o ->
                     new CriticalPatientDataDTO.ObservationsInfo(
@@ -168,7 +173,8 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
   }
 
   private CriticalPatientDataDTO.PractitionerInfo createPractitionerInfo(Practitioner practitioner) {
-    if (practitioner == null) return new CriticalPatientDataDTO.PractitionerInfo(null, null, null);
+    if (practitioner == null) return new CriticalPatientDataDTO
+            .PractitionerInfo(null, null, null);
 
     return new CriticalPatientDataDTO.PractitionerInfo(
             practitioner.name(),
@@ -195,15 +201,15 @@ public class PostgresGetCriticalPatientDataService implements GetCriticalPatient
   private List<CriticalPatientDataDTO.CarePlanInfo> createCarePlansInfo(List<CarePlanModel> carePlanModels) {
     if (carePlanModels.size() == 0) return new ArrayList<>();
 
-    List<CriticalPatientDataDTO.CarePlanInfo> carePlanInfos = carePlanModels.stream()
-            .map(c ->
-                    new CriticalPatientDataDTO.CarePlanInfo(
-                            c.getResource().status(),
-                            c.getResource().intent(),
-                            c.getResource().activity()
-                    )
+    return carePlanModels.stream()
+            .map(c -> {
+                      return new CriticalPatientDataDTO.CarePlanInfo(
+                              c.getResource().status(),
+                              c.getResource().intent(),
+                              c.getResource().activity()
+                      );
+                    }
             ).collect(Collectors.toList());
-    return null;
   }
 
 }

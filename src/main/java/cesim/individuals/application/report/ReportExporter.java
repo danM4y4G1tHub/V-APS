@@ -1,7 +1,5 @@
 package cesim.individuals.application.report;
 
-import cesim.individuals.application.notification.NotificationDispatcher;
-import cesim.individuals.domain.entities.report.outputDTO.CarePlanNotificationDTO;
 import cesim.individuals.domain.entities.report.outputDTO.MonthlyStatisticsReportDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,23 +31,27 @@ public class ReportExporter {
       try {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(authToken);
+//        headers.setBearerAuth(authToken);
 
         HttpEntity<MonthlyStatisticsReportDTO> request = new HttpEntity<>(reportDTO, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(
-                reportStatisticUrl, HttpMethod.POST, request, String.class
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                reportStatisticUrl, request, String.class
         );
 
         if (!response.getStatusCode().is2xxSuccessful()) {
-          System.out.println("Monthly Statistics Report error: " + response.getBody());
+          logger.error("Error on monthly statistics report generation: {}", response.getBody());
         }
         return;
       } catch (Exception ex) {
         retryCount++;
         Thread.sleep(5000);
-        logger.error("Errer sending Monthly Statistics Report: " + ex.getMessage());
+        logger.error("Error sending monthly statistics report (attempt{}) {}:",
+                retryCount,
+                ex.getMessage()
+        );
       }
     }
+    logger.error("Fail to send monthly statistics report after {} attempts", MAX_RETRIES);
   }
 }

@@ -24,6 +24,7 @@ public class LabController {
 
   }
 
+  //RF08
   @GetMapping("/specimen")
 //  @PreAuthorize("hasRole('LAB_TECHNICIAN')")
   public CompletableFuture<Page<Specimen>> getSpecimens(

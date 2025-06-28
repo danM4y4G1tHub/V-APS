@@ -1,10 +1,14 @@
 package cesim.individuals.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record MedicationRequest(
         String resourceType,
         String id,
@@ -42,6 +46,57 @@ public record MedicationRequest(
         Substitution substitution,
         List<Reference> eventHistory
 ) {
+  public MedicationRequest(
+          String id,
+          MedicationRequest.Status status,
+          MedicationRequest.Intent intent,
+          Reference medication,
+          Reference subject,
+          Reference requester,
+          List<Reference> reason,
+          List<Dosage> dosageInstruction,
+          String renderedDosageInstruction,
+          LocalDateTime authoredOn
+          ){
+    this(
+            "MedicationRequest",
+            id,
+            null,
+            null,
+            null,
+            null,
+            status,
+            null,
+            null,
+            intent,
+            null,
+            null,
+            null,
+            medication,
+            subject,
+            null,
+            null,
+            null,
+            authoredOn,
+            requester,
+            null,
+            null,
+            null,
+            null,
+            null,
+            reason,
+            null,
+            null,
+            null,
+            renderedDosageInstruction,
+            null,
+            dosageInstruction,
+            null,
+            null,
+            null
+    );
+  }
+
   public enum Status {
     ACTIVE("active"),
     ON_HOLD("on-hold"),

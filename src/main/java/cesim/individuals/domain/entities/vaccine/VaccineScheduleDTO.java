@@ -1,7 +1,6 @@
 package cesim.individuals.domain.entities.vaccine;
 
-import cesim.individuals.domain.entities.Period;
-
+import java.time.Period;
 import java.util.List;
 
 public record VaccineScheduleDTO(
@@ -12,6 +11,7 @@ public record VaccineScheduleDTO(
   public record DoseSchedule(
           int doseNumber,
           Period minAge,
+          Period maxAge,
           Period recommendedInterval
   ) {
   }

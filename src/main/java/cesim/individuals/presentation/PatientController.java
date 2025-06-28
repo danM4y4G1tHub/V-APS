@@ -1,7 +1,7 @@
 package cesim.individuals.presentation;
 
-import org.springframework.web.bind.annotation.*;
 import cesim.individuals.domain.usecases.patient.*;
+import org.springframework.web.bind.annotation.*;
 import cesim.individuals.domain.utils.Page;
 import cesim.individuals.domain.utils.Pageable;
 import cesim.individuals.domain.entities.Patient;

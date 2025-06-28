@@ -1,6 +1,5 @@
 package cesim.individuals.infrastructure.repository;
 
-import cesim.individuals.domain.entities.RelatedPerson;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

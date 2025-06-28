@@ -4,7 +4,6 @@ import cesim.individuals.infrastructure.repository.models.EncounterModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
+import java.util.Date;
 import java.util.List;
 
 @Tag(
@@ -34,15 +34,18 @@ public interface EncounterRepository extends JpaRepository<EncounterModel, Strin
 
   @RestResource()
   @Query(value =
-          "SELECT e FROM encounters e " +
-                  "WHERE e.resource->'participant' @> :practitionerRef " +
-                  "AND e.resource->'period'->>'start' BETWEEN :startDate AND :endDate",
-          nativeQuery = true
-  )
+          "SELECT * FROM encounters e " +
+                  "WHERE EXISTS ( " +
+                  "  SELECT 1 FROM jsonb_array_elements(e.resource->'participant') AS p " +
+                  "  WHERE p->'individual'->>'reference' = :practitionerRef " +
+                  ") " +
+                  "AND CAST(e.resource->'actualPeriod'->>'start' AS TIMESTAMP) " +
+                  "BETWEEN :startDate AND :endDate",
+          nativeQuery = true)
   Page<EncounterModel> findByPractitionerAndDateRange(
           @Param("practitionerRef") String practitionerRef,
-          @Param("startDate") String startDate,
-          @Param("endDate") String endDate,
+          @Param("startDate") Date startDate,
+          @Param("endDate") Date endDate,
           Pageable pageable
   );
 

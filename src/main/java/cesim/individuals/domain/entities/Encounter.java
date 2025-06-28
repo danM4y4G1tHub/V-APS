@@ -1,11 +1,14 @@
 package cesim.individuals.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record Encounter(
         String resourceType,
         String id,
@@ -38,6 +41,51 @@ public record Encounter(
         Encounter.Admission admission,
         List<Encounter.Location> location
 ) {
+  public Encounter(
+          String id,
+          Encounter.Status status,
+          List<CodeableConcept> classfhir,
+          List<CodeableConcept> type,
+          Reference subject,
+          List<Encounter.Participant> participant,
+          List<Reference> appointment,
+          Period actualPeriod,
+          List<Encounter.Reason> reason,
+          List<Encounter.Diagnosis> diagnosis
+  ) {
+    this(
+            "Encounter",
+            id,
+            null,
+            status,
+            classfhir,
+            null,
+            type,
+            null,
+            subject,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            participant,
+            appointment,
+            null,
+            actualPeriod,
+            null,
+            null,
+            null,
+            reason,
+            diagnosis,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+            );
+  }
 
   public enum Status {
     PLANNED("planned"),
@@ -48,6 +96,7 @@ public record Encounter(
     CANCELLED("cancelled"),
     DISCONTINUED("discontinued"),
     ENTERED_IN_ERROR("entered-in-error"),
+    FINISHED("finished"),
     UNKNOWN("unknown");
 
     private final String value;
@@ -65,7 +114,7 @@ public record Encounter(
   public record Participant(
           List<CodeableConcept> type,
           Period period,
-          @JsonProperty("individual") Reference actor
+          Reference actor
   ) {
   }
 

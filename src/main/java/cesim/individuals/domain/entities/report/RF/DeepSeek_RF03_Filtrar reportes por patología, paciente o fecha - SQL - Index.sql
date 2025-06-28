@@ -1,1 +1,0 @@
-CREATE INDEX idx_condition_code ON conditions USING GIN ((resource->'code'));

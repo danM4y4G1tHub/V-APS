@@ -1,10 +1,18 @@
 package cesim.individuals.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record Immunization(
+        String resourceType,
+        String id,
         List<Identifier> identifier,
         List<Reference> basedOn,
         Immunization.Status status,
@@ -47,6 +55,7 @@ public record Immunization(
       this.value = value;
     }
 
+    @JsonValue
     public String getValue() {
       return value;
     }

@@ -7,11 +7,11 @@ import cz.jirutka.rsql.parser.ast.AndNode;
 import cz.jirutka.rsql.parser.ast.ComparisonNode;
 import cz.jirutka.rsql.parser.ast.OrNode;
 import cz.jirutka.rsql.parser.ast.RSQLVisitor;
-    
+
 
 public class CustomRsqlVisitor<T> implements RSQLVisitor<Specification<T>, Void> {
 
-    
+
     private GenericRsqlSpecBuilder<T> builder;
 
     public CustomRsqlVisitor() {

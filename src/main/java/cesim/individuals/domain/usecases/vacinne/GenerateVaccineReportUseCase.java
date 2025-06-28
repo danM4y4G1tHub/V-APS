@@ -1,8 +1,10 @@
 package cesim.individuals.domain.usecases.vacinne;
 
+import cesim.individuals.domain.entities.vaccine.VaccineReportDTO;
 import cesim.individuals.domain.usecases.Usecase;
 import cesim.individuals.domain.usecases.vacinne.depenencies.VaccineManagementService;
 
+import java.time.LocalDate;
 import java.util.concurrent.CompletableFuture;
 
 public class GenerateVaccineReportUseCase implements Usecase<GenerateVaccineReportUseCase.Input,
@@ -14,12 +16,16 @@ public class GenerateVaccineReportUseCase implements Usecase<GenerateVaccineRepo
   }
 
   public CompletableFuture<Output> execute(Input request) {
-    return null;
+    return CompletableFuture.supplyAsync(() -> {
+      VaccineReportDTO reportDTO = managementService.generateVaccineReport(request.reportDate());
+
+      return new Output(reportDTO);
+    });
   }
 
-  public record Input() {
+  public record Input(LocalDate reportDate) {
   }
 
-  public record Output() {
+  public record Output(VaccineReportDTO reportDTO) {
   }
 }

@@ -12,7 +12,7 @@ import cesim.individuals.infrastructure.repository.rsql.CustomRsqlVisitor;
 import cz.jirutka.rsql.parser.RSQLParser;
 
 public abstract class AbstractPostgresSearchService<T, M, R extends PagingAndSortingRepository<M, ?> & JpaSpecificationExecutor<M>> {
-    
+
     protected final R repository;
 
     protected AbstractPostgresSearchService(R repository) {
@@ -39,8 +39,8 @@ public abstract class AbstractPostgresSearchService<T, M, R extends PagingAndSor
                 sort));
 
         return new Page<>(
-            results.getNumber(), 
-            results.getSize(), 
+            results.getNumber(),
+            results.getSize(),
             results.getTotalPages(),
             results.getContent().stream()
                    .map(this::mapToEntity)

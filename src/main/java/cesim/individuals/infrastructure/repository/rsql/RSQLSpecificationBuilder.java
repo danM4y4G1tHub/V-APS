@@ -9,12 +9,12 @@ import io.micrometer.common.util.StringUtils;
 
 @Component
 public class RSQLSpecificationBuilder {
-    
+
     public <T> Specification<T> createSpecification(String rsqlQuery) {
         if (StringUtils.isBlank(rsqlQuery)) {
             return null;
         }
-        
+
         Node rootNode = new RSQLParser().parse(rsqlQuery);
         return rootNode.accept(new CustomRsqlVisitor<T>());
     }

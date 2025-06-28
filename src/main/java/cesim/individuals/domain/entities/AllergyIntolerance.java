@@ -1,8 +1,13 @@
 package cesim.individuals.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record AllergyIntolerance(
         String resourceType,
         String id,
@@ -16,7 +21,7 @@ public record AllergyIntolerance(
         Reference patient,
         Encounter encounter,
         LocalDateTime onsetDateTime,
-        Age onsetAge, // Placeholder for Age
+        Age onsetAge,
         Period onsetPeriod,
         Range onsetRange,
         String onsetString,
@@ -26,6 +31,37 @@ public record AllergyIntolerance(
         List<Annotation> note,
         List<Reaction> reaction
 ) {
+  public AllergyIntolerance(
+          String id,
+          CodeableConcept clinicalStatus,
+          CodeableConcept code,
+          Reference patient,
+          String criticality
+          ){
+    this(
+            "AllergyIntolerance",
+            id,
+            null,
+            clinicalStatus,
+            null,
+            null,
+            null,
+            criticality,
+            code,
+            patient,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
+  }
+
   public record Participant(
           CodeableConcept function,
           Reference actor // Practitioner

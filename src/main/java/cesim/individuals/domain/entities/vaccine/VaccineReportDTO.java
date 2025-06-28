@@ -1,6 +1,7 @@
 package cesim.individuals.domain.entities.vaccine;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record VaccineReportDTO(
@@ -8,7 +9,14 @@ public record VaccineReportDTO(
         List<UpcomingDoseAlert> upcomingDoses
 ) {
 
-  public record PatientVaccineStatus() {
+  public record PatientVaccineStatus(
+          String patientId,
+          String patientName,
+          String vaccineName,
+          int appliedDoses,
+          int totalDoses,
+          LocalDate nextDoseDate
+  ) {
   }
 
   public record UpcomingDoseAlert(
